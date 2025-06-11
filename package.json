@@ -1,14 +1,16 @@
 {
-  "name": "signature-pad",
+  "name": "@niel-blanca/signature-pad-js",
   "version": "1.0.0",
-  "description": "Lightweight Signature Pad using Canvas API. Vanilla JS, no dependencies.",
+  "description": "A lightweight and dependency-free Signature Pad built using the Canvas API with Vanilla JavaScript.",
   "main": "dist/signature-pad.js",
   "module": "src/SignaturePad.js",
   "types": "types/index.d.ts",
-  "scripts": {
-    "build": "esbuild src/SignaturePad.js --bundle --outfile=dist/signature-pad.js && esbuild src/SignaturePad.js --bundle --minify --outfile=dist/signature-pad.min.js",
-    "dev": "esbuild src/SignaturePad.js --bundle --sourcemap --outfile=dist/signature-pad.js",
-    "prepare": "npm run build"
+  "exports": {
+    ".": {
+      "import": "./src/SignaturePad.js",
+      "require": "./dist/signature-pad.js",
+      "types": "./types/index.d.ts"
+    }
   },
   "files": [
     "dist",
@@ -17,16 +19,26 @@
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "build": "esbuild src/SignaturePad.js --bundle --outfile=dist/signature-pad.js && esbuild src/SignaturePad.js --bundle --minify --outfile=dist/signature-pad.min.js",
+    "dev": "esbuild src/SignaturePad.js --bundle --sourcemap --outfile=dist/signature-pad.js",
+    "prepare": "npm run build"
+  },
   "keywords": [
     "signature",
     "signature-pad",
     "canvas",
     "drawing",
-    "javascript",
     "vanilla-js",
-    "spybooster"
+    "javascript",
+    "signature-capture",
+    "no-dependencies"
   ],
-  "author": "Niel - Spybooster",
+  "author": {
+    "name": "Niel Blanca",
+    "email": "jezerniel.blanca@icloud.com",
+    "url": "https://github.com/Spybooster"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -36,6 +48,9 @@
     "url": "https://github.com/Spybooster/signature-pad-js/issues"
   },
   "homepage": "https://github.com/Spybooster/signature-pad-js#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "esbuild": "^0.20.2"
   },

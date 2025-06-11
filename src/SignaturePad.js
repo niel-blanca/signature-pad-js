@@ -256,3 +256,5 @@ class SignaturePad {
     this._redrawLines();
   }
 }
+
+export default SignaturePad;
