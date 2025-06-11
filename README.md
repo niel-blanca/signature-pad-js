@@ -124,12 +124,6 @@ signature-pad-js/
 ├── package.json
 └── README.md
 ```
-
-In Markdown (`.md`), you add links using the following syntax:
-
-```md
-[Link Text](URL)
-```
 ---
 
 ### 🧾 License
