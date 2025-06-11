@@ -1,6 +1,6 @@
 {
   "name": "@niel-blanca/signature-pad-js",
-  "version": "1.0.1.2",
+  "version": "1.0.2",
   "description": "A lightweight and dependency-free Signature Pad built using the Canvas API with Vanilla JavaScript.",
   "main": "dist/signature-pad.js",
   "module": "src/SignaturePad.js",
