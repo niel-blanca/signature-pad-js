@@ -14,19 +14,19 @@ Offers smooth drawing, **undo**, **clear**, and **export** (PNG, SVG, JSON) with
 ### 🔹 Using npm (recommended)
 
 ```bash
-npm install @niel-blanca/signature-pad-js@1.0.2
+npm install @niel-blanca/signature-pad-js@1.0.3
 ```
 
 Or add directly to your `package.json`:
 
 ```json
-"@niel-blanca/signature-pad-js": "^1.0.2"
+"@niel-blanca/signature-pad-js": "^1.0.3"
 ```
 
 ### 🔹 CDN (for quick use)
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@niel-blanca/signature-pad-js@1.0.2/dist/signature-pad.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@niel-blanca/signature-pad-js@1.0.3/dist/signature-pad.min.js"></script>
 ```
 
 ---
@@ -162,7 +162,7 @@ package.json
 
 ```html
 <div id="signature"></div>
-<script src="https://cdn.jsdelivr.net/npm/@niel-blanca/signature-pad-js@1.0.2/dist/signature-pad.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@niel-blanca/signature-pad-js@1.0.3/dist/signature-pad.min.js"></script>
 <script>
   const container = document.getElementById('signature');
   const pad = new SignaturePad(container);
@@ -182,7 +182,7 @@ const imageData = pad.toDataURL();
 
 ## 🔄 Change Log
 
-**v1.0.2**
+**v1.0.3**
 
 * Initial stable release
 * PNG/SVG/JSON export
