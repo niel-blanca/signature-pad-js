@@ -9,7 +9,7 @@ A lightweight and dependency-free Signature Pad built with the Canvas API using 
 #### ✅ Using NPM/Yarn (recommended for modern projects)
 
 ```bash
-npm install @spybooster/signature-pad-js
+npm install @niel-blanca/signature-pad-js
 # or
 yarn add @spybooster/signature-pad-js
 ```
