@@ -51,7 +51,8 @@
   },
   "homepage": "https://github.com/Spybooster/signature-pad-js#readme",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
     "esbuild": "^0.20.2"
