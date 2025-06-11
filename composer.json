@@ -1,20 +1,20 @@
 {
   "name": "niel-blanca/signature-pad-js",
-  "description": "Lightweight Signature Pad using Canvas.",
+  "description": "A lightweight and dependency-free Signature Pad using the Canvas API.",
   "type": "library",
   "license": "MIT",
   "authors": [
     {
       "name": "Niel Blanca",
       "email": "jezerniel.blanca@icloud.com",
-      "homepage": "https://github.com/Spybooster",
+      "homepage": "https://github.com/niel-blanca",
       "role": "Developer"
     }
   ],
   "require": {},
   "autoload": {
     "psr-4": {
-      "Spybooster\\SignaturePad\\": "src/"
+      "NielBlanca\\SignaturePad\\": "src/"
     }
   },
   "extra": {
