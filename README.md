@@ -136,14 +136,3 @@ MIT License © 2025 Niel - [Spybooster](https://github.com/Spybooster/signature-
 ### 💬 Support / Feedback
 
 Found a bug or want to suggest a feature? [Open an issue](https://github.com/Spybooster/signature-pad-js/issues) on GitHub.
-
----
-
-Pull requests and stars welcome!
-```yaml
-Let me know if you want me to add:
-
-- Shields/badges (npm version, license, build status)
-
-Ready to publish.
-```
