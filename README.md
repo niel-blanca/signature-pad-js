@@ -27,7 +27,7 @@ Download or link dist/signature-pad.min.js in your HTML:
 
 ✅ JavaScript (ESM / Module)
 ```js
-import SignaturePad from '@spybooster/signature-pad-js';
+import SignaturePad from '@niel-blanca/signature-pad-js';
 
 const container = document.getElementById('signature');
 const syncField = document.getElementById('signature-data');
