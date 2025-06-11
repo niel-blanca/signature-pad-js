@@ -12,24 +12,23 @@ A lightweight and dependency-free Signature Pad built with the Canvas API using 
 npm install @spybooster/signature-pad-js
 # or
 yarn add @spybooster/signature-pad-js
+```
+
 🗂️ CDN/Manual
 Download or link dist/signature-pad.min.js in your HTML:
-
-html
-Copy
-Edit
+```html
 <script src="dist/signature-pad.min.js"></script>
+```
+
 ⚙️ Usage
 ✅ HTML
-html
-Copy
-Edit
+```html
 <div id="signature" class="signature-container"></div>
 <input type="hidden" id="signature-data" name="signature" />
+```
+
 ✅ JavaScript (ESM / Module)
-js
-Copy
-Edit
+```js
 import SignaturePad from '@spybooster/signature-pad-js';
 
 const container = document.getElementById('signature');
@@ -43,12 +42,12 @@ const pad = new SignaturePad(container, {
   syncField: syncField,
   syncFormat: 'PNG'
 });
+```
+
 🎨 Styling
 Add this CSS for a Bootstrap-like styled signature box:
 
-css
-Copy
-Edit
+```css
 .signature-container {
   width: 100%;
   height: 200px;
@@ -57,8 +56,11 @@ Edit
   background-color: #fff;
   position: relative;
 }
+```
+
 🔧 Options
 Option	Type	Default	Description
+```php
 background	string	'#fff'	Canvas background color
 color	string	'#000'	Pen color
 thickness	number	2	Pen stroke width
@@ -72,9 +74,11 @@ syncField	HTMLElement/null	null	Auto sync field to signature value
 syncFormat	`'PNG'	'SVG'	'JSON'`
 svgStyles	boolean	false	Inline styles in SVG
 onChange	(instance) => {}	null	Callback on signature change
+```
 
 📥 API Methods
 Method	Description
+```php
 clear()	Clears the canvas
 undo()	Undo the last stroke
 isEmpty()	Returns true if signature is empty
@@ -82,35 +86,33 @@ toJSON()	Export as JSON string
 toSVG()	Export as SVG string
 toDataURL()	Export as PNG (or JPEG/SVG) data URL
 draw(data)	Import from JSON, PNG, or SVG string
+```
 
 🔄 Example: Saving and Loading
-js
-Copy
-Edit
+```js
 const saved = pad.toJSON();
 pad.clear();
 pad.draw(saved);
+```
+
 🧪 Development
 Build the project:
-bash
-Copy
-Edit
+```bash
 npm install
 npm run build
+```
+
 Watch mode:
-bash
-Copy
-Edit
+```bash
 npm run dev
+```
+
 Output:
 dist/signature-pad.js – bundled (dev)
-
 dist/signature-pad.min.js – bundled and minified
 
 📁 Project Structure
-pgsql
-Copy
-Edit
+```pgsql
 signature-pad-js/
 ├── dist/
 │   ├── signature-pad.js
@@ -121,6 +123,8 @@ signature-pad-js/
 │   └── index.d.ts
 ├── package.json
 └── README.md
+```
+
 🧾 License
 MIT License © 2025 Niel - Spybooster
 
@@ -128,11 +132,12 @@ MIT License © 2025 Niel - Spybooster
 GitHub Issues
 
 Pull requests and stars welcome!
+```yaml
+Let me know if you want me to add:
 
-yaml
-Copy
-Edit
+- Shields/badges (npm version, license, build status)
+- CodeSandbox/StackBlitz demo link
+- A contributing guide (`CONTRIBUTING.md`)
 
----
-
-Let me know if you want a badge version (`npm`, `build`, `license`, etc.) or if you'll publish it under a scoped namespace like `@spybooster/signature-pad-js`.
+Ready to publish.
+```
