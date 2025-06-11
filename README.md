@@ -127,11 +127,25 @@ signature-pad-js/
 └── README.md
 ```
 
-🧾 License
-MIT License © 2025 Niel - Spybooster
+In Markdown (`.md`), you add links using the following syntax:
 
-💬 Support / Feedback
-GitHub Issues
+```md
+[Link Text](URL)
+```
+---
+
+### 🧾 License
+
+MIT License © 2025 Niel - [Spybooster](https://github.com/Spybooster/signature-pad-js)
+[View License](https://opensource.org/licenses/MIT)
+
+---
+
+### 💬 Support / Feedback
+
+Found a bug or want to suggest a feature? [Open an issue](https://github.com/Spybooster/signature-pad-js/issues) on GitHub.
+
+---
 
 Pull requests and stars welcome!
 ```yaml
