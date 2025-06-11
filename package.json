@@ -1,0 +1,45 @@
+{
+  "name": "signature-pad",
+  "version": "1.0.0",
+  "description": "Lightweight Signature Pad using Canvas API. Vanilla JS, no dependencies.",
+  "main": "dist/signature-pad.js",
+  "module": "src/SignaturePad.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "build": "esbuild src/SignaturePad.js --bundle --outfile=dist/signature-pad.js && esbuild src/SignaturePad.js --bundle --minify --outfile=dist/signature-pad.min.js",
+    "dev": "esbuild src/SignaturePad.js --bundle --sourcemap --outfile=dist/signature-pad.js",
+    "prepare": "npm run build"
+  },
+  "files": [
+    "dist",
+    "src",
+    "types",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [
+    "signature",
+    "signature-pad",
+    "canvas",
+    "drawing",
+    "javascript",
+    "vanilla-js",
+    "spybooster"
+  ],
+  "author": "Niel - Spybooster",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Spybooster/signature-pad-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Spybooster/signature-pad-js/issues"
+  },
+  "homepage": "https://github.com/Spybooster/signature-pad-js#readme",
+  "devDependencies": {
+    "esbuild": "^0.20.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
