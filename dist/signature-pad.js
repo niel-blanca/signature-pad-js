@@ -240,4 +240,3 @@
  * sigPad.toSVG();     // Export as SVG
  * --------------------------------------------------------
  */
-//# sourceMappingURL=signature-pad.js.map
