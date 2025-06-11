@@ -60,33 +60,35 @@ Add this CSS for a Bootstrap-like styled signature box:
 
 🔧 Options
 Option	Type	Default	Description
-```php
-background	string	'#fff'	Canvas background color
-color	string	'#000'	Pen color
-thickness	number	2	Pen stroke width
-guideline	boolean	false	Show a baseline guide
-guidelineColor	string	'#a0a0a0'	Guide line color
-guidelineOffset	number	50	Guide line position from bottom
-guidelineIndent	number	10	Horizontal padding of guide line
-disableResize	boolean	false	Prevent canvas from resizing on window resize
-undoLimit	number	10	Max undo levels
-syncField	HTMLElement/null	null	Auto sync field to signature value
-syncFormat	`'PNG'	'SVG'	'JSON'`
-svgStyles	boolean	false	Inline styles in SVG
-onChange	(instance) => {}	null	Callback on signature change
-```
+| Option            | Type                       | Default     | Description                                   |
+| ----------------- | -------------------------- | ----------- | --------------------------------------------- |
+| `background`      | `string`                   | `'#fff'`    | Canvas background color                       |
+| `color`           | `string`                   | `'#000'`    | Pen color                                     |
+| `thickness`       | `number`                   | `2`         | Pen stroke width                              |
+| `guideline`       | `boolean`                  | `false`     | Show a baseline guide                         |
+| `guidelineColor`  | `string`                   | `'#a0a0a0'` | Guide line color                              |
+| `guidelineOffset` | `number`                   | `50`        | Guide line position from bottom               |
+| `guidelineIndent` | `number`                   | `10`        | Horizontal padding of guide line              |
+| `disableResize`   | `boolean`                  | `false`     | Prevent canvas from resizing on window resize |
+| `undoLimit`       | `number`                   | `10`        | Max undo levels                               |
+| `syncField`       | `HTMLElement \| null`      | `null`      | Auto sync field to signature value            |
+| `syncFormat`      | `'PNG' \| 'SVG' \| 'JSON'` | `'PNG'`     | Export format when syncing                    |
+| `svgStyles`       | `boolean`                  | `false`     | Use inline styles in SVG                      |
+| `onChange`        | `(instance) => {}`         | `null`      | Callback on signature change                  |
+
 
 📥 API Methods
 Method	Description
-```php
-clear()	Clears the canvas
-undo()	Undo the last stroke
-isEmpty()	Returns true if signature is empty
-toJSON()	Export as JSON string
-toSVG()	Export as SVG string
-toDataURL()	Export as PNG (or JPEG/SVG) data URL
-draw(data)	Import from JSON, PNG, or SVG string
-```
+| Method        | Description                                      |
+| ------------- | ------------------------------------------------ |
+| `clear()`     | Clears the canvas                                |
+| `undo()`      | Undo the last stroke                             |
+| `isEmpty()`   | Returns `true` if signature is empty             |
+| `toJSON()`    | Export signature as a JSON string                |
+| `toSVG()`     | Export signature as an SVG string                |
+| `toDataURL()` | Export signature as a PNG (or JPEG/SVG) data URL |
+| `draw(data)`  | Import signature from JSON, PNG, or SVG string   |
+
 
 🔄 Example: Saving and Loading
 ```js
