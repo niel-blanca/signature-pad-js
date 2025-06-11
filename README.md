@@ -136,8 +136,6 @@ Pull requests and stars welcome!
 Let me know if you want me to add:
 
 - Shields/badges (npm version, license, build status)
-- CodeSandbox/StackBlitz demo link
-- A contributing guide (`CONTRIBUTING.md`)
 
 Ready to publish.
 ```
