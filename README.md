@@ -1,9 +1,9 @@
 # 🖋️ Signature Pad JS
 
- ![image](https://github.com/user-attachments/assets/ea1d4e48-b49d-45cc-824b-847436142eb1)
+![image](https://github.com/user-attachments/assets/ea1d4e48-b49d-45cc-824b-847436142eb1)
 
 A lightweight, dependency-free Signature Pad powered by the Canvas API and written in **Vanilla JavaScript**.
-Offers smooth drawing, **undo**, **clear**, and **export** (PNG, SVG, JSON) with easy integration for modern web projects.
+Offers smooth drawing, **undo**, **redo**, **clear**, **dynamic color updates**, and export (PNG, JPG, SVG, JSON) with easy integration for modern web projects.
 
 > ⚡️ No jQuery. No frameworks. Just clean and fast native JavaScript.
 
@@ -14,19 +14,19 @@ Offers smooth drawing, **undo**, **clear**, and **export** (PNG, SVG, JSON) with
 ### 🔹 Using npm (recommended)
 
 ```bash
-npm install @niel-blanca/signature-pad-js@1.0.3
+npm install @niel-blanca/signature-pad-js@1.1.0
 ```
 
 Or add directly to your `package.json`:
 
 ```json
-"@niel-blanca/signature-pad-js": "^1.0.3"
+"@niel-blanca/signature-pad-js": "^1.1.0"
 ```
 
 ### 🔹 CDN (for quick use)
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@niel-blanca/signature-pad-js@1.0.3/dist/signature-pad.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@niel-blanca/signature-pad-js@1.1.0/dist/signature-pad.min.js"></script>
 ```
 
 ---
@@ -40,8 +40,6 @@ Or add directly to your `package.json`:
 <input type="hidden" id="signature-data" name="signature" />
 ```
 
-> The hidden input is automatically synced with the drawn signature in your preferred format (e.g., PNG, SVG, JSON).
-
 ---
 
 ### ✅ 2. JavaScript Setup (ES Modules)
@@ -53,12 +51,12 @@ const container = document.getElementById('signature');
 const syncField = document.getElementById('signature-data');
 
 const pad = new SignaturePad(container, {
-  background: '#ffffff',  // Canvas background
-  color: '#000000',       // Stroke color
-  thickness: 2,           // Pen stroke thickness
-  guideline: true,        // Show writing guideline
-  syncField: syncField,   // Hidden field to sync with
-  syncFormat: 'PNG'       // 'PNG', 'SVG', or 'JSON'
+  background: '#ffffff',
+  color: '#000000',
+  thickness: 2,
+  guideline: true,
+  syncField: syncField,
+  syncFormat: 'PNG'
 });
 ```
 
@@ -66,42 +64,38 @@ const pad = new SignaturePad(container, {
 
 ## 🎨 Styling
 
-Add the following CSS to style your signature container:
-
 ```css
 .signature-box {
-    width: 100%;
-    height: 200px;
-    border: 1px solid #dee2e6;
-    border-radius: 0.375rem;
-    background-color: #ffffff;
-    padding: 0;
-    position: relative;
-    overflow: hidden;
+  width: 100%;
+  height: 200px;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  background-color: #ffffff;
+  position: relative;
+  overflow: hidden;
 }
 
 .signature-box canvas {
-    width: 100% !important;
-    height: 100% !important;
-    display: block;
-    cursor: crosshair;
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  cursor: crosshair;
 }
 ```
-
-You can also customize cursor style, guidelines, or shadows for enhanced UI/UX.
 
 ---
 
 ## ✨ Features
 
-| Feature        | Description                           |
-| -------------- | ------------------------------------- |
-| ✅ Draw         | Smooth handwriting experience         |
-| ✅ Undo         | Undo last stroke with `pad.undo()`    |
-| ✅ Clear        | Reset pad using `pad.clear()`         |
-| ✅ Export       | Get data in PNG, SVG, or JSON format  |
-| ✅ Sync Field   | Automatically bind drawing to a field |
-| ✅ Customizable | Adjust color, thickness, background   |
+| Feature         | Description                             |
+| --------------- | --------------------------------------- |
+| ✅ Draw          | Smooth handwriting experience           |
+| ✅ Undo/Redo     | Undo & redo strokes                     |
+| ✅ Clear         | Reset pad                               |
+| ✅ Export        | PNG, JPG, SVG, JSON                     |
+| ✅ Sync Field    | Auto-bind signature to input            |
+| ✅ Dynamic Color | Update pen/guideline color in real-time |
+| ✅ Customizable  | Background, thickness, sync behavior    |
 
 ---
 
@@ -109,39 +103,46 @@ You can also customize cursor style, guidelines, or shadows for enhanced UI/UX.
 
 ### `new SignaturePad(container, options)`
 
-* **container**: DOM element to render the canvas
-* **options**: Configuration object
+**Options**
 
-### Options
-
-| Option       | Type      | Default  | Description                       |
-| ------------ | --------- | -------- | --------------------------------- |
-| `color`      | `string`  | `'#000'` | Stroke color                      |
-| `background` | `string`  | `'#fff'` | Canvas background                 |
-| `thickness`  | `number`  | `2`      | Stroke width                      |
-| `guideline`  | `boolean` | `false`  | Show writing line                 |
-| `syncField`  | `Element` | `null`   | Binds to hidden input             |
-| `syncFormat` | `string`  | `'PNG'`  | One of `'PNG'`, `'SVG'`, `'JSON'` |
+| Option           | Type      | Default  | Description                                |
+| ---------------- | --------- | -------- | ------------------------------------------ |
+| `color`          | `string`  | `'#000'` | Pen stroke color                           |
+| `background`     | `string`  | `'#fff'` | Canvas background color                    |
+| `thickness`      | `number`  | `2`      | Stroke width                               |
+| `guideline`      | `boolean` | `false`  | Show writing guideline                     |
+| `guidelineColor` | `string`  | `'#ccc'` | Guideline color                            |
+| `syncField`      | `Element` | `null`   | Target field to auto-sync signature output |
+| `syncFormat`     | `string`  | `'PNG'`  | One of `'PNG'`, `'SVG'`, `'JSON'`          |
+| `disableResize`  | `boolean` | `false`  | Disable canvas resize on window resize     |
+| `undoLimit`      | `number`  | `50`     | Max undo stack depth                       |
 
 ---
 
-## 🧪 Common Methods
+## 🧪 Methods
 
 ```js
-pad.clear();       // Clears the canvas
-pad.undo();        // Removes the last stroke
-pad.getData();     // Returns drawing data (array of strokes)
-pad.toDataURL();   // Returns Base64 PNG string
-pad.toSVG();       // Returns SVG markup
+pad.clear();                // Clears canvas
+pad.undo();                 // Undo last stroke
+pad.redo();                 // Redo last undone stroke
+pad.isEmpty();              // Returns true if canvas is empty
+pad.toJSON();               // Get signature data in JSON
+pad.toSVG();                // Get signature as SVG markup
+pad.toDataURL('image/jpeg'); // Export as JPG
+pad.toDataURL();            // Default is PNG
+
+pad.setColor('#ff0000');         // Update pen color dynamically
+pad.setGuidelineColor('#00f');   // Change guideline color live
 ```
 
 ---
 
-## 🛡️ Best Practices
+## 📤 Export Example
 
-* Use `syncField` with form submissions for storing user signature.
-* Use PNG format for backend uploads.
-* Store SVG/JSON for vector-style auditing or re-editing.
+```js
+const imageData = pad.toDataURL('image/jpeg');
+// Upload to your server
+```
 
 ---
 
@@ -158,43 +159,31 @@ package.json
 
 ---
 
-## 🚀 CDN Quickstart (No Build Tools)
+## 🚀 CDN Quickstart
 
 ```html
 <div id="signature"></div>
-<script src="https://cdn.jsdelivr.net/npm/@niel-blanca/signature-pad-js@1.0.3/dist/signature-pad.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@niel-blanca/signature-pad-js@1.1.0/dist/signature-pad.min.js"></script>
 <script>
-  const container = document.getElementById('signature');
-  const pad = new SignaturePad(container);
+  const pad = new SignaturePad(document.getElementById('signature'));
 </script>
-```
-
----
-
-## 📤 Export Example (Base64 Image for Upload)
-
-```js
-const imageData = pad.toDataURL();
-// Now use fetch/AJAX to upload to your server
 ```
 
 ---
 
 ## 🔄 Change Log
 
-**v1.0.3**
+**v1.1.0**
 
-* Initial stable release
-* PNG/SVG/JSON export
-* Undo and clear support
-* Canvas guideline and sync input
+* ✍️ Added `redo()` for stroke recovery
+* 🎨 `setColor()` and `setGuidelineColor()` added for runtime color control
+* 📸 `toDataURL('image/jpeg')` added for JPG export support
+* ⚙️ Refactored core logic for better stability and performance
 
 ---
 
 ## 📫 Feedback & Contributions
 
-Found a bug? Need a feature?
-Open an issue or contribute directly on GitHub:
+Have ideas, bugs, or feature requests?
+Open an issue or contribute on GitHub:
 👉 [github.com/niel-blanca/signature-pad-js](https://github.com/niel-blanca/signature-pad-js)
-
----
