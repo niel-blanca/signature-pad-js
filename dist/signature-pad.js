@@ -19,6 +19,7 @@
         onChange: null
       }, options);
       this.lines = [];
+      this.redoStack = [];
       this._initCanvas();
       this._attachEvents();
       if (!this.opts.disableResize) {
@@ -37,16 +38,18 @@
     }
     _resizeCanvas() {
       const { width, height } = this.container.getBoundingClientRect();
-      const dataUrl = this.canvas.toDataURL();
+      const img = new Image();
+      img.src = this.canvas.toDataURL();
       this.canvas.width = width;
       this.canvas.height = height;
+      img.onload = () => {
+        this._drawBackground();
+        this.ctx.drawImage(img, 0, 0);
+      };
       this.ctx = this.canvas.getContext("2d");
-      this._drawBackground();
-      this._redrawLines();
     }
     _attachEvents() {
-      const down = (e) => this._startStroke(e);
-      this.canvas.addEventListener("pointerdown", down);
+      this.canvas.addEventListener("pointerdown", (e) => this._startStroke(e));
       this.canvas.addEventListener("pointermove", (e) => this._continueStroke(e));
       document.addEventListener("pointerup", (e) => this._endStroke(e));
     }
@@ -83,14 +86,12 @@
       this.lines.push(this.points.slice());
       if (this.lines.length > this.opts.undoLimit)
         this.lines.shift();
+      this.redoStack = [];
       this._triggerChange();
     }
     _addPoint(x, y) {
       const rect = this.canvas.getBoundingClientRect();
-      this.points.push({
-        x: x - rect.left,
-        y: y - rect.top
-      });
+      this.points.push({ x: x - rect.left, y: y - rect.top });
     }
     _drawBackground() {
       if (!this.ctx)
@@ -126,7 +127,10 @@
         let val;
         switch (this.opts.syncFormat) {
           case "PNG":
-            val = this.toDataURL();
+            val = this.toDataURL("image/png");
+            break;
+          case "JPG":
+            val = this.toDataURL("image/jpeg");
             break;
           case "SVG":
             val = this.toSVG();
@@ -142,12 +146,24 @@
     }
     clear(trigger = true) {
       this.lines = [];
+      this.redoStack = [];
       this._drawBackground();
       if (trigger)
         this._triggerChange();
     }
     undo() {
-      this.lines.pop();
+      if (this.lines.length === 0)
+        return;
+      const last = this.lines.pop();
+      this.redoStack.push(last);
+      this._redrawLines();
+      this._triggerChange();
+    }
+    redo() {
+      if (this.redoStack.length === 0)
+        return;
+      const last = this.redoStack.pop();
+      this.lines.push(last);
       this._redrawLines();
       this._triggerChange();
     }
@@ -208,35 +224,29 @@
       });
       this._redrawLines();
     }
+    // ✅ NEW: Change pen color dynamically
+    setColor(newColor) {
+      this.opts.color = newColor;
+      this._redrawLines();
+      this._triggerChange();
+    }
+    // ✅ NEW: Change guideline color dynamically
+    setGuidelineColor(newColor) {
+      this.opts.guidelineColor = newColor;
+      this._redrawLines();
+      this._triggerChange();
+    }
   };
   var SignaturePad_default = SignaturePad;
 })();
 /**
- * SignaturePad.js v1.0.0
+ * Niel Blanca / SignaturePad.js v1.1.0
  * --------------------------------------------------------
- * Custom lightweight signature pad with undo, resize, sync,
- * and SVG/PNG/JSON export support.
+ * Custom lightweight signature pad with undo, redo, resize, sync,
+ * dynamic color updates, and SVG/PNG/JPG/JSON export support.
  *
- * @version     1.0.0
- * @author      Niel - Spybooster
+ * @version     1.1.0
+ * @author      Niel Blanca
  * @license     MIT (https://opensource.org/licenses/MIT)
- * --------------------------------------------------------
- * Usage:
- *
- * const sigPad = new SignaturePad(document.getElementById('sig-container'), {
- *     background: '#fff',
- *     color: '#000',
- *     thickness: 2,
- *     guideline: true,
- *     syncField: document.getElementById('signature64'),
- *     syncFormat: 'PNG',
- *     onChange: () => console.log("Signature updated.")
- * });
- *
- * sigPad.clear(); // Clear signature
- * sigPad.undo();  // Undo last stroke
- * sigPad.toDataURL(); // Export as image
- * sigPad.toJSON();    // Export as JSON
- * sigPad.toSVG();     // Export as SVG
  * --------------------------------------------------------
  */

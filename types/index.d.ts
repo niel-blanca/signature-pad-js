@@ -23,15 +23,21 @@ declare module 'signature-pad' {
   class SignaturePad {
     constructor(container: HTMLElement, options?: SignaturePadOptions);
 
+    // Drawing & Data
     clear(trigger?: boolean): void;
     undo(): void;
+    redo(): void;
     isEmpty(): boolean;
+    draw(data: string | { lines: Point[][] }): void;
 
+    // Data Export
     toJSON(): string;
-    toDataURL(type?: string, quality?: number): string;
+    toDataURL(type?: 'image/png' | 'image/jpeg' | string, quality?: number): string;
     toSVG(): string;
 
-    draw(data: string | { lines: Point[][] }): void;
+    // Dynamic Option Updates
+    setColor(color: string): void;
+    setGuidelineColor(color: string): void;
   }
 
   export = SignaturePad;
