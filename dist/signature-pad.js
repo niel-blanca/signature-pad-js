@@ -59,8 +59,7 @@
       this.isDrawing = true;
     }
     _continueStroke({ clientX, clientY }) {
-      if (!this.isDrawing)
-        return;
+      if (!this.isDrawing) return;
       this._addPoint(clientX, clientY);
       if (this.points.length > 1) {
         const [p1, p2] = this.points.slice(-2);
@@ -73,8 +72,7 @@
       }
     }
     _endStroke() {
-      if (!this.isDrawing)
-        return;
+      if (!this.isDrawing) return;
       this.isDrawing = false;
       if (this.points.length === 1) {
         const p = this.points[0];
@@ -84,8 +82,7 @@
         this.ctx.fill();
       }
       this.lines.push(this.points.slice());
-      if (this.lines.length > this.opts.undoLimit)
-        this.lines.shift();
+      if (this.lines.length > this.opts.undoLimit) this.lines.shift();
       this.redoStack = [];
       this._triggerChange();
     }
@@ -94,8 +91,7 @@
       this.points.push({ x: x - rect.left, y: y - rect.top });
     }
     _drawBackground() {
-      if (!this.ctx)
-        return;
+      if (!this.ctx) return;
       this.ctx.fillStyle = this.opts.background;
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
       if (this.opts.guideline) {
@@ -109,8 +105,7 @@
       }
     }
     _redrawLines() {
-      if (!this.ctx)
-        return;
+      if (!this.ctx) return;
       this._drawBackground();
       this.ctx.strokeStyle = this.opts.color;
       this.ctx.lineWidth = this.opts.thickness;
@@ -148,20 +143,17 @@
       this.lines = [];
       this.redoStack = [];
       this._drawBackground();
-      if (trigger)
-        this._triggerChange();
+      if (trigger) this._triggerChange();
     }
     undo() {
-      if (this.lines.length === 0)
-        return;
+      if (this.lines.length === 0) return;
       const last = this.lines.pop();
       this.redoStack.push(last);
       this._redrawLines();
       this._triggerChange();
     }
     redo() {
-      if (this.redoStack.length === 0)
-        return;
+      if (this.redoStack.length === 0) return;
       const last = this.redoStack.pop();
       this.lines.push(last);
       this._redrawLines();
