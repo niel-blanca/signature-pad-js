@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signature Pad JS v1.2.0 - Enhanced Demo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .demo-section {
+            padding: 30px;
+        }
+
+        .signature-container {
+            width: 100%;
+            height: 300px;
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .signature-container:hover {
+            border-color: #667eea;
+            background: #fff;
+        }
+
+        .signature-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+            cursor: crosshair;
+            border-radius: 10px;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .control-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+        }
+
+        .control-group h3 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            min-width: 80px;
+        }
+
+        .input-group input[type="color"],
+        .input-group input[type="range"],
+        .input-group input[type="number"] {
+            flex: 1;
+        }
+
+        input[type="color"] {
+            width: 50px;
+            height: 35px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        input[type="range"] {
+            accent-color: #667eea;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        .export-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .export-preview {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .feature p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                justify-content: center;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🖋️ Signature Pad JS</h1>
+            <p>Enhanced v1.2.0 with smooth curves, pressure sensitivity, and modern features</p>
+        </div>
+
+        <div class="demo-section">
+            <div id="signature" class="signature-container"></div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <h3>Actions</h3>
+                    <div class="btn-group">
+                        <button id="clear" class="btn btn-danger">Clear</button>
+                        <button id="undo" class="btn btn-warning">Undo</button>
+                        <button id="redo" class="btn btn-success">Redo</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Pen Settings</h3>
+                    <div class="input-group">
+                        <label>Color:</label>
+                        <input type="color" id="penColor" value="#000000">
+                    </div>
+                    <div class="input-group">
+                        <label>Thickness:</label>
+                        <input type="range" id="thickness" min="1" max="10" value="2">
+                        <span id="thicknessValue">2</span>
+                    </div>
+                    <div class="input-group">
+                        <label>Smoothing:</label>
+                        <input type="range" id="smoothing" min="0" max="100" value="50">
+                        <span id="smoothingValue">50%</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Appearance</h3>
+                    <div class="input-group">
+                        <label>Background:</label>
+                        <input type="color" id="bgColor" value="#ffffff">
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="guideline">
+                        <label for="guideline">Show Guideline</label>
+                    </div>
+                    <div class="input-group">
+                        <label>Guide Color:</label>
+                        <input type="color" id="guideColor" value="#a0a0a0">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Export</h3>
+                    <div class="btn-group">
+                        <button id="exportPNG" class="btn btn-primary">PNG</button>
+                        <button id="exportJPG" class="btn btn-primary">JPG</button>
+                        <button id="exportSVG" class="btn btn-secondary">SVG</button>
+                        <button id="exportJSON" class="btn btn-secondary">JSON</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="export-section">
+                <h3>Export Preview</h3>
+                <div id="exportPreview" class="export-preview">
+                    Draw a signature to see export data...
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🎨</div>
+                <h3>Smooth Drawing</h3>
+                <p>Bezier curves and pressure sensitivity for natural strokes</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>High Performance</h3>
+                <p>Optimized rendering and memory management</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔧</div>
+                <h3>Highly Configurable</h3>
+                <p>Extensive customization options and method chaining</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <h3>Touch Friendly</h3>
+                <p>Modern Pointer Events API with full touch support</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📦</div>
+                <h3>Zero Dependencies</h3>
+                <p>Pure vanilla JavaScript, no external libraries</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🚀</div>
+                <h3>Modern Build</h3>
+                <p>ESLint, Prettier, Jest testing, and TypeScript definitions</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="dist/signature-pad.js"></script>
+    <script>
+        // Initialize signature pad with enhanced options
+        const pad = new SignaturePad(document.getElementById('signature'), {
+            background: '#ffffff',
+            color: '#000000',
+            thickness: 2,
+            guideline: false,
+            smoothing: true,
+            smoothingFactor: 0.5,
+            onChange: (instance) => {
+                updateExportPreview();
+            }
+        });
+
+        // Control elements
+        const controls = {
+            clear: document.getElementById('clear'),
+            undo: document.getElementById('undo'),
+            redo: document.getElementById('redo'),
+            penColor: document.getElementById('penColor'),
+            thickness: document.getElementById('thickness'),
+            thicknessValue: document.getElementById('thicknessValue'),
+            smoothing: document.getElementById('smoothing'),
+            smoothingValue: document.getElementById('smoothingValue'),
+            bgColor: document.getElementById('bgColor'),
+            guideline: document.getElementById('guideline'),
+            guideColor: document.getElementById('guideColor'),
+            exportPNG: document.getElementById('exportPNG'),
+            exportJPG: document.getElementById('exportJPG'),
+            exportSVG: document.getElementById('exportSVG'),
+            exportJSON: document.getElementById('exportJSON'),
+            exportPreview: document.getElementById('exportPreview')
+        };
+
+        // Action handlers
+        controls.clear.addEventListener('click', () => pad.clear());
+        controls.undo.addEventListener('click', () => pad.undo());
+        controls.redo.addEventListener('click', () => pad.redo());
+
+        // Style handlers
+        controls.penColor.addEventListener('change', (e) => pad.setColor(e.target.value));
+        controls.bgColor.addEventListener('change', (e) => pad.setBackgroundColor(e.target.value));
+        controls.guideColor.addEventListener('change', (e) => pad.setGuidelineColor(e.target.value));
+
+        controls.thickness.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            controls.thicknessValue.textContent = value;
+            pad.setThickness(value);
+        });
+
+        controls.smoothing.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            controls.smoothingValue.textContent = value + '%';
+            pad.opts.smoothingFactor = value / 100;
+        });
+
+        controls.guideline.addEventListener('change', (e) => {
+            pad.toggleGuideline(e.target.checked);
+        });
+
+        // Export handlers
+        controls.exportPNG.addEventListener('click', () => {
+            const dataURL = pad.toDataURL('image/png');
+            downloadFile(dataURL, 'signature.png');
+            controls.exportPreview.textContent = 'PNG exported: ' + dataURL.substring(0, 100) + '...';
+        });
+
+        controls.exportJPG.addEventListener('click', () => {
+            const dataURL = pad.toDataURL('image/jpeg', 0.8);
+            downloadFile(dataURL, 'signature.jpg');
+            controls.exportPreview.textContent = 'JPG exported: ' + dataURL.substring(0, 100) + '...';
+        });
+
+        controls.exportSVG.addEventListener('click', () => {
+            const svg = pad.toSVG();
+            downloadFile('data:image/svg+xml;base64,' + btoa(svg), 'signature.svg');
+            controls.exportPreview.textContent = svg;
+        });
+
+        controls.exportJSON.addEventListener('click', () => {
+            const json = pad.toJSON();
+            downloadFile('data:application/json;base64,' + btoa(json), 'signature.json');
+            controls.exportPreview.textContent = json;
+        });
+
+        // Helper functions
+        function downloadFile(dataURL, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = dataURL;
+            link.click();
+        }
+
+        function updateExportPreview() {
+            if (pad.isEmpty()) {
+                controls.exportPreview.textContent = 'Draw a signature to see export data...';
+            } else {
+                const json = pad.toJSON();
+                const parsed = JSON.parse(json);
+                controls.exportPreview.textContent = `Lines: ${parsed.lines.length}\nPoints: ${parsed.lines.reduce((sum, line) => sum + line.length, 0)}\nBounds: ${JSON.stringify(pad.getBounds(), null, 2)}`;
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case 'z':
+                        e.preventDefault();
+                        if (e.shiftKey) {
+                            pad.redo();
+                        } else {
+                            pad.undo();
+                        }
+                        break;
+                    case 'Delete':
+                    case 'Backspace':
+                        e.preventDefault();
+                        pad.clear();
+                        break;
+                }
+            }
+        });
+
+        // Initialize display
+        updateExportPreview();
+    </script>
+</body>
+</html>
