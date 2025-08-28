@@ -1,15 +1,15 @@
 {
   "name": "@niel-blanca/signature-pad-js",
-  "version": "1.0.2",
+  "version": "1.2.0",
   "description": "A lightweight and dependency-free Signature Pad built using the Canvas API with Vanilla JavaScript.",
   "main": "dist/signature-pad.js",
   "module": "src/SignaturePad.js",
   "types": "types/index.d.ts",
   "exports": {
     ".": {
+      "types": "./types/index.d.ts",
       "import": "./src/SignaturePad.js",
-      "require": "./dist/signature-pad.js",
-      "types": "./types/index.d.ts"
+      "require": "./dist/signature-pad.js"
     }
   },
   "files": [
@@ -20,9 +20,19 @@
     "README.md"
   ],
   "scripts": {
-    "build": "esbuild src/SignaturePad.js --bundle --outfile=dist/signature-pad.js && esbuild src/SignaturePad.js --bundle --minify --outfile=dist/signature-pad.min.js",
-    "dev": "esbuild src/SignaturePad.js --bundle --sourcemap --outfile=dist/signature-pad.js",
-    "prepare": "npm run build"
+    "build": "npm run validate && esbuild src/SignaturePad.js --bundle --outfile=dist/signature-pad.js && esbuild src/SignaturePad.js --bundle --minify --outfile=dist/signature-pad.min.js",
+    "build:dev": "esbuild src/SignaturePad.js --bundle --sourcemap --outfile=dist/signature-pad.js --watch",
+    "build:test": "esbuild src/SignaturePad.js --bundle --format=cjs --outfile=dist/signature-pad.cjs.js",
+    "dev": "npm run build:dev",
+    "test": "npm run build:test && jest",
+    "test:watch": "npm run build:test && jest --watch",
+    "test:coverage": "npm run build:test && jest --coverage",
+    "lint": "eslint src/**/*.js --fix",
+    "lint:check": "eslint src/**/*.js",
+    "format": "prettier --write src/**/*.js tests/**/*.js",
+    "format:check": "prettier --check src/**/*.js tests/**/*.js",
+    "prepare": "npm run build",
+    "validate": "npm run lint:check && npm run format:check && npm run test"
   },
   "keywords": [
     "signature",
@@ -53,7 +63,12 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "esbuild": "^0.20.2"
+    "@eslint/js": "^9.11.1",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.11.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "prettier": "^3.3.3"
   },
   "engines": {
     "node": ">=14.0.0"
