@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signature Pad JS - Live Demo | Zero Dependencies, Modern & Lightweight</title>
+    <meta name="description" content="Try the live demo of Signature Pad JS - a modern, lightweight signature capture library with zero dependencies. Features smooth drawing, pressure sensitivity, and multiple export formats.">
+    <meta name="keywords" content="signature pad, javascript, signature capture, canvas, drawing, vanilla js">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Signature Pad JS - Live Demo">
+    <meta property="og:description" content="Interactive demo of a modern, lightweight signature pad with zero dependencies">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://niel-blanca.github.io/signature-pad-js/">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🖋️</text></svg>">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --text-color: #374151;
+            --border-color: #e5e7eb;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .hero-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .hero-header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero-header .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        .hero-badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .demo-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .demo-header {
+            background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .demo-header h2 {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .demo-header p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .demo-content {
+            padding: 30px;
+        }
+
+        .signature-container {
+            border: 3px dashed var(--border-color);
+            border-radius: 12px;
+            width: 100%;
+            height: 350px;
+            margin: 25px 0;
+            position: relative;
+            transition: border-color 0.3s ease;
+        }
+
+        .signature-container:hover {
+            border-color: #667eea;
+        }
+
+        .signature-container.has-content {
+            border-color: var(--success-color);
+            border-style: solid;
+        }
+
+        .signature-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #9ca3af;
+            font-size: 1.1rem;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: #667eea;
+            background: #f8fafc;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .color-picker, .thickness-slider {
+            padding: 8px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .color-picker {
+            width: 60px;
+            height: 40px;
+            cursor: pointer;
+        }
+
+        .thickness-slider {
+            width: 100%;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            color: var(--text-color);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .feature-card p {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .installation-section {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .installation-header {
+            background: var(--secondary-gradient);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+
+        .installation-content {
+            padding: 30px;
+        }
+
+        .code-block {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .output-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .output-section h3 {
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .output-content {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .github-corner {
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .github-corner svg {
+            fill: #667eea;
+            color: white;
+            width: 80px;
+            height: 80px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-header h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-header .subtitle {
+                font-size: 1rem;
+            }
+
+            .hero-badges {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .controls {
+                grid-template-columns: 1fr;
+            }
+
+            .signature-container {
+                height: 280px;
+            }
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        .status-empty {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-has-content {
+            background: #d1fae5;
+            color: #065f46;
+        }
+    </style>
+</head>
+<body>
+    <!-- GitHub Corner -->
+    <a href="https://github.com/niel-blanca/signature-pad-js" class="github-corner" aria-label="View source on GitHub">
+        <svg viewBox="0 0 250 250" aria-hidden="true">
+            <path d="m0,0 0,250 250,0 0,-250z"/>
+            <path d="m0,0 115,115 0,135 135,0 z" fill="currentColor" style="transform-origin: 130px 106px;" />
+            <path d="m128.3,109.0 c113.8,99.7 119.0,89.6 119.0,89.6 0,0 12.9,23.7 -19.1,35.2 -30.7,11.0 -22.4,25.9 -9.5,25.9 15.7,0 31.5,-21.9 31.5,-21.9 12.7,-22.6 26.6,-20.5 26.6,-20.5 6.2,-2.3 12.6,4.3 12.6,4.3 z" fill="currentColor" style="transform-origin: 130px 106px;" />
+        </svg>
+    </a>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-header">
+                <h1>🖋️ Signature Pad JS</h1>
+                <p class="subtitle">Modern, lightweight signature capture with zero dependencies</p>
+                <div class="hero-badges">
+                    <span class="badge">📦 Zero Dependencies</span>
+                    <span class="badge">⚡ 12.5KB Minified</span>
+                    <span class="badge">📱 Touch Friendly</span>
+                    <span class="badge">🎨 Smooth Drawing</span>
+                    <span class="badge">📤 Multiple Exports</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Demo -->
+        <div class="demo-container">
+            <div class="demo-header">
+                <h2>🎮 Interactive Demo</h2>
+                <p>Try out all the features below. Draw your signature and experiment with the controls!</p>
+            </div>
+            
+            <div class="demo-content">
+                <!-- Signature Pad Container -->
+                <div id="signature-container" class="signature-container">
+                    <div class="signature-placeholder">
+                        ✏️ Click or touch here to start drawing your signature
+                    </div>
+                </div>
+
+                <div class="status-indicator status-empty" id="status-indicator">
+                    📝 Signature pad is empty
+                </div>
+
+                <!-- Controls -->
+                <div class="controls">
+                    <div class="control-group">
+                        <label>🎨 Pen Color</label>
+                        <input type="color" id="colorPicker" class="color-picker" value="#000000">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>📏 Pen Thickness: <span id="thicknessValue">2</span>px</label>
+                        <input type="range" id="thicknessSlider" class="thickness-slider" min="1" max="10" value="2">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>🎯 Quick Actions</label>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn btn-secondary" onclick="clearSignature()">🗑️ Clear</button>
+                            <button class="btn btn-secondary" onclick="undoSignature()">↶ Undo</button>
+                            <button class="btn btn-secondary" onclick="redoSignature()">↷ Redo</button>
+                            <button class="btn btn-secondary" onclick="toggleGuideline()">📏 Guide</button>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>📤 Export Options</label>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn btn-success" onclick="exportToPNG()">🖼️ PNG</button>
+                            <button class="btn btn-success" onclick="exportToSVG()">⚡ SVG</button>
+                            <button class="btn btn-success" onclick="exportToJSON()">📄 JSON</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output Section -->
+                <div class="output-section" id="output-section" style="display: none;">
+                    <h3 id="output-title">📤 Export Result</h3>
+                    <div class="output-content" id="output-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>Smooth Drawing</h3>
+                <p>Bezier curves with pressure sensitivity for natural-looking strokes</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Cross-Device</h3>
+                <p>Works perfectly on desktop, tablet, and mobile with touch and pen support</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Undo/Redo</h3>
+                <p>Full history management with configurable limits for easy corrections</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📤</div>
+                <h3>Multiple Exports</h3>
+                <p>PNG, JPG, SVG, and JSON formats with customizable quality settings</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Lightweight</h3>
+                <p>Only 12.5KB minified with zero dependencies and optimized performance</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔧</div>
+                <h3>Configurable</h3>
+                <p>15+ options for colors, thickness, guidelines, and behavior customization</p>
+            </div>
+        </div>
+
+        <!-- Installation Section -->
+        <div class="installation-section">
+            <div class="installation-header">
+                <h2>🚀 Get Started in Seconds</h2>
+                <p>Add this signature pad to your project with just a few lines of code</p>
+            </div>
+            
+            <div class="installation-content">
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('npm')">📦 NPM</button>
+                    <button class="tab" onclick="showTab('cdn')">🌐 CDN</button>
+                    <button class="tab" onclick="showTab('usage')">💻 Usage</button>
+                </div>
+
+                <div id="npm-tab" class="tab-content active">
+                    <h3>Install via NPM</h3>
+                    <div class="code-block">npm install @niel-blanca/signature-pad</div>
+                    <div class="code-block">// ES6 Import
+import SignaturePad from '@niel-blanca/signature-pad';
+
+// CommonJS
+const SignaturePad = require('@niel-blanca/signature-pad');</div>
+                </div>
+
+                <div id="cdn-tab" class="tab-content">
+                    <h3>Use via CDN</h3>
+                    <div class="code-block">&lt;script src="https://unpkg.com/@niel-blanca/signature-pad@latest/dist/signature-pad.min.js">&lt;/script></div>
+                    <div class="code-block">// The SignaturePad class is now available globally
+const signaturePad = new SignaturePad(container);</div>
+                </div>
+
+                <div id="usage-tab" class="tab-content">
+                    <h3>Basic Usage</h3>
+                    <div class="code-block">// Create container element
+const container = document.getElementById('signature-container');
+
+// Initialize signature pad
+const signaturePad = new SignaturePad(container, {
+    color: '#000000',
+    thickness: 2,
+    background: '#ffffff'
+});
+
+// Export as PNG
+const pngData = signaturePad.toDataURL();
+
+// Export as JSON
+const jsonData = signaturePad.toJSON();
+
+// Clear the pad
+signaturePad.clear();</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include the Signature Pad library -->
+    <script src="https://unpkg.com/@niel-blanca/signature-pad@latest/dist/signature-pad.min.js"></script>
+    
+    <script>
+        // Initialize the signature pad
+        let signaturePad;
+        
+        function initSignaturePad() {
+            const container = document.getElementById('signature-container');
+            const placeholder = container.querySelector('.signature-placeholder');
+            
+            signaturePad = new SignaturePad(container, {
+                background: '#ffffff',
+                color: '#000000',
+                thickness: 2,
+                guideline: false,
+                guidelineColor: '#e5e7eb',
+                onChange: (instance) => {
+                    updateStatus();
+                    if (!instance.isEmpty()) {
+                        placeholder.style.display = 'none';
+                        container.classList.add('has-content');
+                    } else {
+                        placeholder.style.display = 'block';
+                        container.classList.remove('has-content');
+                    }
+                }
+            });
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initSignaturePad);
+
+        // Update status indicator
+        function updateStatus() {
+            const indicator = document.getElementById('status-indicator');
+            if (signaturePad.isEmpty()) {
+                indicator.className = 'status-indicator status-empty';
+                indicator.textContent = '📝 Signature pad is empty';
+            } else {
+                indicator.className = 'status-indicator status-has-content';
+                indicator.textContent = '✅ Signature captured successfully';
+            }
+        }
+
+        // Control functions
+        function clearSignature() {
+            signaturePad.clear();
+            hideOutput();
+        }
+
+        function undoSignature() {
+            signaturePad.undo();
+        }
+
+        function redoSignature() {
+            signaturePad.redo();
+        }
+
+        function toggleGuideline() {
+            signaturePad.toggleGuideline();
+        }
+
+        // Color picker
+        document.getElementById('colorPicker').addEventListener('change', function() {
+            signaturePad.setColor(this.value);
+        });
+
+        // Thickness slider
+        document.getElementById('thicknessSlider').addEventListener('input', function() {
+            const thickness = parseInt(this.value);
+            document.getElementById('thicknessValue').textContent = thickness;
+            signaturePad.setThickness(thickness);
+        });
+
+        // Export functions
+        function exportToPNG() {
+            if (signaturePad.isEmpty()) {
+                alert('Please draw something first! ✏️');
+                return;
+            }
+            
+            const dataURL = signaturePad.toDataURL('image/png');
+            showOutput('🖼️ PNG Export', dataURL.substring(0, 100) + '...\n\n[Full data URL - click download to get complete file]');
+            downloadFile(dataURL, 'signature.png');
+        }
+
+        function exportToSVG() {
+            if (signaturePad.isEmpty()) {
+                alert('Please draw something first! ✏️');
+                return;
+            }
+            
+            const svgData = signaturePad.toSVG();
+            showOutput('⚡ SVG Export', svgData);
+            
+            const blob = new Blob([svgData], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            downloadFile(url, 'signature.svg');
+        }
+
+        function exportToJSON() {
+            if (signaturePad.isEmpty()) {
+                alert('Please draw something first! ✏️');
+                return;
+            }
+            
+            const jsonData = signaturePad.toJSON();
+            showOutput('📄 JSON Export', jsonData);
+            
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            downloadFile(url, 'signature.json');
+        }
+
+        function downloadFile(url, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = url;
+            link.click();
+            
+            if (url.startsWith('blob:')) {
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        function showOutput(title, content) {
+            const section = document.getElementById('output-section');
+            const titleEl = document.getElementById('output-title');
+            const contentEl = document.getElementById('output-content');
+            
+            titleEl.textContent = title;
+            contentEl.textContent = content;
+            section.style.display = 'block';
+            
+            // Scroll to output
+            section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function hideOutput() {
+            document.getElementById('output-section').style.display = 'none';
+        }
+
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Add some demo interactions
+        console.log('🖋️ Signature Pad JS Demo Ready!');
+        console.log('📚 Documentation: https://github.com/niel-blanca/signature-pad-js');
+        console.log('📦 NPM Package: https://www.npmjs.com/package/@niel-blanca/signature-pad');
+    </script>
+</body>
+</html>

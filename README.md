@@ -1,10 +1,12 @@
 # 🖋️ Signature Pad JS
 
-![NPM Version](https://img.shields.io/npm/v/@niel-blanca/signature-pad-js)
+![NPM Version](https://img.shields.io/npm/v/@niel-blanca/signature-pad)
 ![Build Status](https://img.shields.io/github/actions/workflow/status/niel-blanca/signature-pad-js/npm-publish-github-packages.yml)
 ![Test Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
-![License](https://img.shields.io/npm/l/@niel-blanca/signature-pad-js)
-![Bundle Size](https://img.shields.io/bundlephobia/minzip/@niel-blanca/signature-pad-js)
+![License](https://img.shields.io/npm/l/@niel-blanca/signature-pad)
+![Bundle Size](https://img.shields.io/bundlephobia/minzip/@niel-blanca/signature-pad)
+
+## 🎮 [**Try the Live Demo →**](https://niel-blanca.github.io/signature-pad-js/)
 
 ![Signature Pad Demo](https://github.com/user-attachments/assets/ea1d4e48-b49d-45cc-824b-847436142eb1)
 
