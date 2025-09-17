@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signature Pad JS - Quick Start Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .signature-container {
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            width: 100%;
+            height: 300px;
+            margin: 20px 0;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .controls button, .controls input, .controls select {
+            padding: 8px 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .controls button:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <h1>🖋️ Signature Pad JS - Quick Start</h1>
+    <p>Draw your signature below and try the various features!</p>
+
+    <!-- Signature container -->
+    <div id="signature-container" class="signature-container"></div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button onclick="clearSignature()">Clear</button>
+        <button onclick="undoSignature()">Undo</button>
+        <button onclick="redoSignature()">Redo</button>
+        
+        <select id="colorPicker" onchange="changeColor()">
+            <option value="#000000">Black</option>
+            <option value="#ff0000">Red</option>
+            <option value="#0000ff">Blue</option>
+            <option value="#008000">Green</option>
+            <option value="#ff00ff">Purple</option>
+        </select>
+        
+        <input type="range" id="thicknessSlider" min="1" max="10" value="2" 
+               onchange="changeThickness()" title="Pen Thickness">
+        
+        <button onclick="toggleGuideline()">Toggle Guideline</button>
+        <button onclick="exportToPNG()">Export PNG</button>
+        <button onclick="exportToSVG()">Export SVG</button>
+        <button onclick="exportToJSON()">Export JSON</button>
+    </div>
+
+    <!-- Output area -->
+    <div id="output" class="output" style="display: none;"></div>
+
+    <!-- Include the Signature Pad library -->
+    <script src="https://unpkg.com/@niel-blanca/signature-pad@latest/dist/signature-pad.min.js"></script>
+    
+    <script>
+        // Initialize the signature pad
+        const signaturePad = new SignaturePad(
+            document.getElementById('signature-container'),
+            {
+                background: '#ffffff',
+                color: '#000000',
+                thickness: 2,
+                guideline: false,
+                guidelineColor: '#e0e0e0',
+                onChange: (instance) => {
+                    console.log('Signature changed:', instance.isEmpty() ? 'Empty' : 'Has content');
+                }
+            }
+        );
+
+        // Control functions
+        function clearSignature() {
+            signaturePad.clear();
+            hideOutput();
+        }
+
+        function undoSignature() {
+            signaturePad.undo();
+        }
+
+        function redoSignature() {
+            signaturePad.redo();
+        }
+
+        function changeColor() {
+            const color = document.getElementById('colorPicker').value;
+            signaturePad.setColor(color);
+        }
+
+        function changeThickness() {
+            const thickness = document.getElementById('thicknessSlider').value;
+            signaturePad.setThickness(parseInt(thickness));
+        }
+
+        function toggleGuideline() {
+            signaturePad.toggleGuideline();
+        }
+
+        function exportToPNG() {
+            if (signaturePad.isEmpty()) {
+                alert('Please draw something first!');
+                return;
+            }
+            
+            const dataURL = signaturePad.toDataURL('image/png');
+            showOutput('PNG Export', dataURL.substring(0, 100) + '...');
+            
+            // Create download link
+            const link = document.createElement('a');
+            link.download = 'signature.png';
+            link.href = dataURL;
+            link.click();
+        }
+
+        function exportToSVG() {
+            if (signaturePad.isEmpty()) {
+                alert('Please draw something first!');
+                return;
+            }
+            
+            const svgData = signaturePad.toSVG();
+            showOutput('SVG Export', svgData);
+            
+            // Create download link
+            const blob = new Blob([svgData], { type: 'image/svg+xml' });
+            const link = document.createElement('a');
+            link.download = 'signature.svg';
+            link.href = URL.createObjectURL(blob);
+            link.click();
+        }
+
+        function exportToJSON() {
+            const jsonData = signaturePad.toJSON();
+            showOutput('JSON Export', jsonData);
+            
+            // Create download link
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.download = 'signature.json';
+            link.href = URL.createObjectURL(blob);
+            link.click();
+        }
+
+        function showOutput(title, content) {
+            const output = document.getElementById('output');
+            output.style.display = 'block';
+            output.textContent = `${title}:\n${content}`;
+        }
+
+        function hideOutput() {
+            const output = document.getElementById('output');
+            output.style.display = 'none';
+        }
+
+        // Demonstration of method chaining
+        console.log('Signature Pad initialized with method chaining:');
+        signaturePad
+            .setColor('#000000')
+            .setThickness(2)
+            .toggleGuideline(false);
+    </script>
+
+    <div style="margin-top: 40px; padding: 20px; background-color: #f0f8ff; border-radius: 8px;">
+        <h3>🚀 Ready to use in your project?</h3>
+        <p><strong>Install via npm:</strong></p>
+        <code style="background: #e8e8e8; padding: 8px 12px; border-radius: 4px; display: inline-block;">
+            npm install @niel-blanca/signature-pad
+        </code>
+        
+        <p style="margin-top: 15px;"><strong>ES6 Import:</strong></p>
+        <code style="background: #e8e8e8; padding: 8px 12px; border-radius: 4px; display: inline-block;">
+            import SignaturePad from '@niel-blanca/signature-pad';
+        </code>
+        
+        <p style="margin-top: 15px;"><strong>CommonJS:</strong></p>
+        <code style="background: #e8e8e8; padding: 8px 12px; border-radius: 4px; display: inline-block;">
+            const SignaturePad = require('@niel-blanca/signature-pad');
+        </code>
+    </div>
+</body>
+</html>

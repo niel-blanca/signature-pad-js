@@ -1,0 +1,37 @@
+# Development files
+node_modules/
+coverage/
+tests/
+*.test.js
+*.spec.js
+
+# Build tools
+eslint.config.js
+jest.config.json
+.prettierrc.json
+
+# Version control
+.git/
+.github/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Demo files (keep in repo but not in package)
+demo.html
+
+# Source maps (optional - remove if you want to include them)
+*.map
