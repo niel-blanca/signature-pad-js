@@ -22,15 +22,16 @@
     <style>
         /* Hero specific styles */
         .hero {
-            background: white;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
             overflow: hidden;
             margin-bottom: 40px;
         }
 
         .hero-header {
-            background: var(--primary-gradient);
+            background: var(--primary-color);
             color: white;
             padding: 60px 40px;
             text-align: center;
@@ -40,11 +41,7 @@
             font-size: 4rem;
             margin-bottom: 20px;
             font-weight: 800;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            background: linear-gradient(45deg, #ffffff, #f0f8ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: white;
         }
 
         .hero-subtitle {
@@ -54,6 +51,7 @@
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
+            color: white;
         }
 
         .hero-badges {
@@ -65,13 +63,13 @@
         }
 
         .badge {
-            background: rgba(255,255,255,0.2);
+            background: var(--bg-tertiary);
+            color: var(--text-color);
             padding: 12px 24px;
             border-radius: 50px;
             font-size: 1rem;
             font-weight: 600;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid var(--border-color);
         }
 
         .hero-actions {
@@ -85,38 +83,39 @@
             padding: 16px 32px;
             font-size: 1.1rem;
             font-weight: 700;
-            border-radius: 12px;
+            border-radius: var(--border-radius);
         }
 
         .btn-hero-primary {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 2px solid rgba(255,255,255,0.3);
+            background: var(--bg-tertiary);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
         }
 
         .btn-hero-primary:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            background: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .btn-hero-secondary {
-            background: white;
-            color: #667eea;
-            border: 2px solid white;
+            background: var(--bg-primary);
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
         }
 
         .btn-hero-secondary:hover {
-            background: #f8fafc;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            background: var(--bg-tertiary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         /* Quick demo section */
         .quick-demo {
-            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            background: var(--bg-tertiary);
             padding: 40px;
-            border-radius: 20px;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-color);
             margin: 40px 0;
         }
 
@@ -443,21 +442,23 @@ if (signaturePad.isEmpty()) {
         </div>
     </div>
 
+    <!-- Load signature_pad library -->
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     <!-- Shared JavaScript -->
     <script src="shared.js"></script>
-    
+
     <script>
         // Initialize signature pads for this page
         function initSignaturePads() {
             // Quick demo pad
-            signaturePadDocs.createSignaturePad('quick-signature-container', {
-                thickness: 3,
-                color: '#667eea'
-            });
-        }
-
-        // Page-specific initialization
+            signaturePads.init([
+                { id: 'quick-signature-container', config: { penColor: '#3182ce', minWidth: 2, maxWidth: 4 } }
+            ]);
+        }        // Page-specific initialization
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize signature pads
+            initSignaturePads();
+            
             // Animate stats on scroll
             const observerOptions = {
                 threshold: 0.1,

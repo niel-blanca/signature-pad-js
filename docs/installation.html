@@ -22,7 +22,7 @@
         }
         
         .method-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-color);
             color: white;
             padding: 25px 30px;
             display: flex;
@@ -301,8 +301,8 @@ console.log('Signature pad created successfully!');</div>
                         <div class="control-group">
                             <label>Test Controls</label>
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button class="btn btn-secondary btn-small" onclick="signaturePadDocs.clearPad('npm-signature-container')">🗑️ Clear</button>
-                                <button class="btn btn-success btn-small" onclick="signaturePadDocs.exportToPNG('npm-signature-container', 'npm-test.png')">📥 Export PNG</button>
+                                <button class="btn btn-secondary btn-small" onclick="clearPad('npm-signature-container')">🗑️ Clear</button>
+                                <button class="btn btn-success btn-small" onclick="exportToPNG('npm-signature-container', 'npm-test.png')">📥 Export PNG</button>
                                 <button class="btn btn-info btn-small" onclick="testNpmFeatures()">🔧 Test Features</button>
                             </div>
                         </div>
@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="controls" style="margin-top: 20px;">
                         <div class="control-group">
                             <label>🎨 Pen Color</label>
-                            <input type="color" id="cdn-color-picker" class="color-picker" value="#ff6b6b" onchange="signaturePadDocs.setColor('cdn-signature-container', this.value)">
+                            <input type="color" id="cdn-color-picker" class="color-picker" value="#e53e3e" onchange="setColor('cdn-signature-container', this.value)">
                         </div>
                         <div class="control-group">
                             <label>📏 Pen Thickness: <span id="cdn-thickness-value">4</span>px</label>
@@ -422,8 +422,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="control-group">
                             <label>Test Controls</label>
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button class="btn btn-secondary btn-small" onclick="signaturePadDocs.clearPad('cdn-signature-container')">🗑️ Clear</button>
-                                <button class="btn btn-success btn-small" onclick="signaturePadDocs.exportToSVG('cdn-signature-container', 'cdn-test.svg')">📥 Export SVG</button>
+                                <button class="btn btn-secondary btn-small" onclick="clearPad('cdn-signature-container')">🗑️ Clear</button>
+                                <button class="btn btn-success btn-small" onclick="exportToSVG('cdn-signature-container', 'cdn-test.svg')">📥 Export SVG</button>
                             </div>
                         </div>
                     </div>
@@ -509,9 +509,9 @@ your-project/
                         <div class="control-group">
                             <label>Quick Actions</label>
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button class="btn btn-secondary btn-small" onclick="signaturePadDocs.clearPad('local-signature-container')">🗑️ Clear</button>
-                                <button class="btn btn-success btn-small" onclick="signaturePadDocs.exportToJSON('local-signature-container', 'local-test.json')">📥 Export JSON</button>
-                                <button class="btn btn-info btn-small" onclick="signaturePadDocs.toggleGuideline('local-signature-container')">📏 Toggle Guide</button>
+                                <button class="btn btn-secondary btn-small" onclick="clearPad('local-signature-container')">🗑️ Clear</button>
+                                <button class="btn btn-success btn-small" onclick="exportToJSON('local-signature-container', 'local-test.json')">📥 Export JSON</button>
+                                <button class="btn btn-info btn-small" onclick="toggleGuideline('local-signature-container')">📏 Toggle Guide</button>
                             </div>
                         </div>
                     </div>
@@ -618,68 +618,90 @@ requiredMethods.forEach(method => {
         </div>
     </div>
 
+    <!-- Load signature_pad library -->
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     <!-- Shared JavaScript -->
     <script src="shared.js"></script>
     
     <script>
         // Initialize signature pads for this page
         function initSignaturePads() {
-            // NPM demo pad
-            signaturePadDocs.createSignaturePad('npm-signature-container', {
-                thickness: 2,
-                color: '#667eea',
-                guideline: false
-            });
-            
-            // CDN demo pad with different styling
-            signaturePadDocs.createSignaturePad('cdn-signature-container', {
-                thickness: 4,
-                color: '#ff6b6b',
-                guideline: false
-            });
-            
-            // Local file demo pad
-            signaturePadDocs.createSignaturePad('local-signature-container', {
-                thickness: 3,
-                color: '#34d399',
-                guideline: true
-            });
+            // Initialize the verification demo pads
+            signaturePads.init([
+                { id: 'npm-signature-container', config: { penColor: '#3182ce', minWidth: 1, maxWidth: 3 } },
+                { id: 'cdn-signature-container', config: { penColor: '#e53e3e', minWidth: 2, maxWidth: 4 } },
+                { id: 'local-signature-container', config: { penColor: '#38a169', minWidth: 1.5, maxWidth: 3.5 } }
+            ]);
         }
 
-        // CDN-specific functions
-        function updateCdnThickness(value) {
-            document.getElementById('cdn-thickness-value').textContent = value;
-            signaturePadDocs.setThickness('cdn-signature-container', parseInt(value));
-        }
-
-        // NPM feature testing
-        function testNpmFeatures() {
-            const pad = signaturePadDocs.pads.get('npm-signature-container');
-            if (!pad) {
-                alert('❌ NPM pad not found!');
-                return;
+        // Update button handlers to use new API
+        function clearPad(padId) {
+            if (signaturePads[padId]) {
+                signaturePads[padId].clear();
             }
-
-            let results = [];
-            
-            // Test basic methods
-            results.push(`isEmpty(): ${pad.isEmpty()}`);
-            results.push(`Container dimensions: ${pad.container.offsetWidth}x${pad.container.offsetHeight}`);
-            
-            // Test configuration
-            pad.setColor('#ff0000');
-            results.push('✅ setColor() method works');
-            
-            pad.setThickness(5);
-            results.push('✅ setThickness() method works');
-            
-            // Reset
-            pad.setColor('#667eea');
-            pad.setThickness(2);
-            
-            const testResults = results.join('\n');
-            signaturePadDocs.showOutput('npm-signature-container', '🧪 NPM Feature Test Results', testResults);
         }
+
+        function exportToPNG(padId, filename) {
+            const pad = signaturePads[padId];
+            if (pad && !pad.isEmpty()) {
+                const dataURL = pad.toDataURL();
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = dataURL;
+                link.click();
+            } else {
+                alert('Please draw a signature first!');
+            }
+        }
+
+        function exportToSVG(padId, filename) {
+            const pad = signaturePads[padId];
+            if (pad && !pad.isEmpty()) {
+                const svgData = pad.toSVG();
+                const blob = new Blob([svgData], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+            } else {
+                alert('Please draw a signature first!');
+            }
+        }
+
+        function exportToJSON(padId, filename) {
+            const pad = signaturePads[padId];
+            if (pad && !pad.isEmpty()) {
+                const jsonData = JSON.stringify(pad.toData(), null, 2);
+                const blob = new Blob([jsonData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+            } else {
+                alert('Please draw a signature first!');
+            }
+        }
+
+        function setColor(padId, color) {
+            const pad = signaturePads[padId];
+            if (pad) {
+                pad.penColor = color;
+            }
+        }
+
+        function toggleGuideline(padId) {
+            // For demonstration purposes
+            alert('Guideline toggle feature would be implemented here');
+        }
+
+        // Page initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            initSignaturePads();
+        });
 
         console.log('📦 Installation Guide Ready!');
         console.log('🧪 Try the verification demos above to test your setup');
