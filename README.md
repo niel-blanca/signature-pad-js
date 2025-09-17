@@ -2,34 +2,80 @@
 
 ![NPM Version](https://img.shields.io/npm/v/@niel-blanca/signature-pad)
 ![Build Status](https://img.shields.io/github/actions/workflow/status/niel-blanca/signature-pad-js/npm-publish-github-packages.yml)
-![Test Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
 ![License](https://img.shields.io/npm/l/@niel-blanca/signature-pad)
 ![Bundle Size](https://img.shields.io/bundlephobia/minzip/@niel-blanca/signature-pad)
 
-## 🎮 [**Try the Live Demo →**](https://niel-blanca.github.io/signature-pad-js/)
+## 🎮 [**Live Demo & Documentation →**](https://niel-blanca.github.io/signature-pad-js/)
 
-![Signature Pad Demo](https://github.com/user-attachments/assets/ea1d4e48-b49d-45cc-824b-847436142eb1)
+> **Modern, lightweight signature capture with zero dependencies (12.5KB minified)**
 
-A **modern, lightweight, and feature-rich** signature pad built with **Vanilla JavaScript**. Offers smooth bezier curve drawing, pressure sensitivity, comprehensive export options, and an intuitive API with method chaining support.
+A feature-rich signature pad built with Vanilla JavaScript. Smooth bezier curves, pressure sensitivity, multiple export formats, and intuitive API.
 
-> ⚡️ **Zero Dependencies** • 📱 **Touch Friendly** • 🎨 **Smooth Drawing** • ⚙️ **Highly Configurable**
+## ⚡ Quick Start
 
-## ✨ Key Features
+### Install
+```bash
+npm install @niel-blanca/signature-pad
+```
 
-| Feature | Description |
-|---------|-------------|
-| 🎨 **Smooth Drawing** | Bezier curves with pressure sensitivity for natural strokes |
-| 📱 **Modern Touch Support** | Pointer Events API with full touch and pen support |
-| 🔄 **Undo/Redo System** | Full history management with configurable limits |
-| 📤 **Multiple Export Formats** | PNG, JPG, SVG, JSON with customizable quality |
-| 🎯 **Method Chaining** | Fluent API for better developer experience |
-| ⚡ **High Performance** | Optimized rendering and memory management |
-| 🔧 **Extensive Configuration** | 15+ options for complete customization |
-| 📝 **TypeScript Support** | Full type definitions included |
-| 🧪 **Comprehensive Testing** | 95%+ test coverage with Jest |
-| 🚀 **Modern Build Pipeline** | ESLint, Prettier, automated CI/CD |
+### Use
+```javascript
+import SignaturePad from '@niel-blanca/signature-pad';
+
+const container = document.getElementById('signature-container');
+const pad = new SignaturePad(container);
+
+// Export as PNG
+const pngData = pad.toDataURL();
+
+// Export as JSON  
+const jsonData = pad.toJSON();
+
+// Clear signature
+pad.clear();
+```
+
+### CDN
+```html
+<script src="https://unpkg.com/@niel-blanca/signature-pad@latest/dist/signature-pad.min.js"></script>
+<script>
+  const pad = new SignaturePad(document.getElementById('container'));
+</script>
+```
+
+## ✨ Features
+
+- 🎨 **Smooth Drawing** - Bezier curves with pressure sensitivity
+- 📱 **Touch Support** - Works on desktop, tablet, and mobile
+- 🔄 **Undo/Redo** - Full history management
+- 📤 **Multiple Exports** - PNG, JPG, SVG, JSON formats
+- ⚡ **Lightweight** - Only 12.5KB minified, zero dependencies
+- 🔧 **Configurable** - 15+ customization options
+- 📝 **TypeScript** - Full type definitions included
+- 🎯 **Method Chaining** - Fluent API design
+
+## 📖 Documentation
+
+- **[📍 Live Demo](https://niel-blanca.github.io/signature-pad-js/)** - Interactive examples and full documentation
+- **[📦 NPM Package](https://www.npmjs.com/package/@niel-blanca/signature-pad)**
+- **[🔧 API Reference](https://niel-blanca.github.io/signature-pad-js/#api)**
+- **[⚙️ Configuration Options](https://niel-blanca.github.io/signature-pad-js/#options)**
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
+5. Open Pull Request
+
+## � License
+
+MIT © [Niel Blanca](https://github.com/niel-blanca)
 
 ---
+
+**[🎮 Try it now →](https://niel-blanca.github.io/signature-pad-js/)** | **[📦 Install →](https://www.npmjs.com/package/@niel-blanca/signature-pad)**
 
 ## 📦 Installation
 
