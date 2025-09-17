@@ -628,9 +628,9 @@ requiredMethods.forEach(method => {
         function initSignaturePads() {
             // Initialize the verification demo pads
             signaturePads.init([
-                { id: 'npm-signature-container', config: { penColor: '#3182ce', minWidth: 1, maxWidth: 3 } },
-                { id: 'cdn-signature-container', config: { penColor: '#e53e3e', minWidth: 2, maxWidth: 4 } },
-                { id: 'local-signature-container', config: { penColor: '#38a169', minWidth: 1.5, maxWidth: 3.5 } }
+                { id: 'npm-signature-container', options: { penColor: '#3182ce', minWidth: 1, maxWidth: 3 } },
+                { id: 'cdn-signature-container', options: { penColor: '#e53e3e', minWidth: 2, maxWidth: 4 } },
+                { id: 'local-signature-container', options: { penColor: '#38a169', minWidth: 1.5, maxWidth: 3.5 } }
             ]);
         }
 
