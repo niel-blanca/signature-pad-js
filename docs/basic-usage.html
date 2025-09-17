@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Usage - SignaturePad.js</title>
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        .usage-section {
+            margin: 3rem 0;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .usage-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .usage-content {
+            padding: 2rem;
+        }
+
+        .code-section {
+            background: var(--background-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: var(--text-color);
+            color: var(--background-color);
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+
+        .code-content {
+            padding: 1.5rem;
+        }
+
+        pre {
+            margin: 0;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .demo-item {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .demo-title {
+            background: var(--background-secondary);
+            padding: 1rem;
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .demo-body {
+            padding: 1.5rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            color: var(--success-color);
+            font-weight: bold;
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .config-item {
+            background: var(--background-secondary);
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .config-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .config-value {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .quick-tip {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .quick-tip-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">✍️</span>
+                <span class="logo-text">SignaturePad.js</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="installation.html" class="nav-link">Installation</a>
+                <a href="basic-usage.html" class="nav-link active">Basic Usage</a>
+                <a href="advanced-usage.html" class="nav-link">Advanced</a>
+                <a href="demo.html" class="nav-link">Demo</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Basic Usage Guide</h1>
+                <p class="page-subtitle">
+                    Learn the fundamentals of SignaturePad.js with step-by-step examples and interactive demos.
+                    Each example includes working code and a live signature pad you can test immediately.
+                </p>
+            </div>
+
+            <!-- Getting Started Section -->
+            <section class="usage-section">
+                <h2 class="usage-header">1. Getting Started - Your First Signature Pad</h2>
+                <div class="usage-content">
+                    <p>The most basic implementation requires just a canvas element and a few lines of JavaScript:</p>
+                    
+                    <div class="code-section">
+                        <div class="code-header">HTML Structure</div>
+                        <div class="code-content">
+                            <pre><code>&lt;canvas id="signature-pad" width="400" height="200"&gt;&lt;/canvas&gt;
+&lt;button id="clear"&gt;Clear&lt;/button&gt;</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="code-section">
+                        <div class="code-header">JavaScript Implementation</div>
+                        <div class="code-content">
+                            <pre><code>// Initialize the signature pad
+const canvas = document.getElementById('signature-pad');
+const signaturePad = new SignaturePad(canvas);
+
+// Add clear functionality
+document.getElementById('clear').addEventListener('click', () =&gt; {
+    signaturePad.clear();
+});</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="demo-item">
+                        <h3 class="demo-title">🎯 Live Demo: Basic Signature Pad</h3>
+                        <div class="demo-body">
+                            <div class="signature-container medium">
+                                <canvas id="basic-pad" class="signature-canvas"></canvas>
+                                <div class="signature-status" id="basic-status">Ready to sign</div>
+                            </div>
+                            <div class="controls">
+                                <button class="btn btn-secondary" onclick="signatureDocs.clearPad('basic-pad')">Clear</button>
+                                <button class="btn btn-primary" onclick="signatureDocs.exportPNG('basic-pad', 'basic-signature')">Save as PNG</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-tip">
+                        <div class="quick-tip-title">💡 Quick Tip</div>
+                        <p>Always set explicit width and height attributes on your canvas element for consistent rendering across devices.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Configuration Options Section -->
+            <section class="usage-section">
+                <h2 class="usage-header">2. Configuration Options</h2>
+                <div class="usage-content">
+                    <p>Customize your signature pad behavior with configuration options passed to the constructor:</p>
+                    
+                    <div class="code-section">
+                        <div class="code-header">Configuration Example</div>
+                        <div class="code-content">
+                            <pre><code>const signaturePad = new SignaturePad(canvas, {
+    backgroundColor: 'rgb(255, 255, 255)', // Background color
+    penColor: 'rgb(0, 0, 0)',             // Pen color
+    minWidth: 0.5,                        // Minimum stroke width
+    maxWidth: 2.5,                        // Maximum stroke width
+    throttle: 16,                         // Throttle drawing in ms
+    minDistance: 5,                       // Minimum distance between points
+    dotSize: 1.0,                         // Size of dots for very short strokes
+    velocityFilterWeight: 0.7             // Velocity filtering weight
+});</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="demo-grid">
+                        <div class="demo-item">
+                            <h3 class="demo-title">🎨 Custom Colors</h3>
+                            <div class="demo-body">
+                                <div class="config-grid">
+                                    <div class="config-item">
+                                        <div class="config-label">Background</div>
+                                        <div class="config-value">#f0f8ff</div>
+                                    </div>
+                                    <div class="config-item">
+                                        <div class="config-label">Pen Color</div>
+                                        <div class="config-value">#2196F3</div>
+                                    </div>
+                                </div>
+                                <div class="signature-container medium">
+                                    <canvas id="custom-colors-pad" class="signature-canvas"></canvas>
+                                    <div class="signature-status" id="custom-colors-status">Try the blue pen!</div>
+                                </div>
+                                <div class="controls">
+                                    <button class="btn btn-secondary" onclick="signatureDocs.clearPad('custom-colors-pad')">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="demo-item">
+                            <h3 class="demo-title">📏 Stroke Width</h3>
+                            <div class="demo-body">
+                                <div class="config-grid">
+                                    <div class="config-item">
+                                        <div class="config-label">Min Width</div>
+                                        <div class="config-value">1.0</div>
+                                    </div>
+                                    <div class="config-item">
+                                        <div class="config-label">Max Width</div>
+                                        <div class="config-value">5.0</div>
+                                    </div>
+                                </div>
+                                <div class="signature-container medium">
+                                    <canvas id="thick-strokes-pad" class="signature-canvas"></canvas>
+                                    <div class="signature-status" id="thick-strokes-status">Draw with variable thickness</div>
+                                </div>
+                                <div class="controls">
+                                    <button class="btn btn-secondary" onclick="signatureDocs.clearPad('thick-strokes-pad')">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-tip">
+                        <div class="quick-tip-title">🎯 Best Practice</div>
+                        <p>Set backgroundColor to match your page background to avoid transparency issues when exporting signatures.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Common Methods Section -->
+            <section class="usage-section">
+                <h2 class="usage-header">3. Essential Methods</h2>
+                <div class="usage-content">
+                    <p>These are the most commonly used methods you'll need for basic signature pad functionality:</p>
+                    
+                    <div class="feature-list">
+                        <li><strong>clear()</strong> - Clears the signature pad canvas</li>
+                        <li><strong>isEmpty()</strong> - Returns true if the canvas is empty</li>
+                        <li><strong>toDataURL()</strong> - Exports signature as base64 PNG image</li>
+                        <li><strong>fromDataURL()</strong> - Loads a signature from base64 data</li>
+                        <li><strong>on() / off()</strong> - Event listener management</li>
+                    </div>
+
+                    <div class="code-section">
+                        <div class="code-header">Common Method Examples</div>
+                        <div class="code-content">
+                            <pre><code>// Check if signature exists before saving
+if (!signaturePad.isEmpty()) {
+    const dataURL = signaturePad.toDataURL(); // Get as PNG
+    console.log('Signature data:', dataURL);
+} else {
+    alert('Please provide a signature first.');
+}
+
+// Load a previously saved signature
+signaturePad.fromDataURL('data:image/png;base64,iVBORw0...');
+
+// Listen to drawing events
+signaturePad.on('beginStroke', () =&gt; console.log('Started drawing'));
+signaturePad.on('endStroke', () =&gt; console.log('Finished stroke'));</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="demo-item">
+                        <h3 class="demo-title">🔄 Interactive Methods Demo</h3>
+                        <div class="demo-body">
+                            <div class="signature-container medium">
+                                <canvas id="methods-pad" class="signature-canvas"></canvas>
+                                <div class="signature-status" id="methods-status">Draw something and try the actions below</div>
+                            </div>
+                            <div class="controls">
+                                <button class="btn btn-secondary" onclick="signatureDocs.clearPad('methods-pad')">Clear</button>
+                                <button class="btn btn-primary" onclick="checkIfEmpty('methods-pad')">Check if Empty</button>
+                                <button class="btn btn-primary" onclick="saveAndLoad('methods-pad')">Save & Reload</button>
+                                <button class="btn btn-primary" onclick="signatureDocs.exportPNG('methods-pad', 'methods-signature')">Export PNG</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Responsive Design Section -->
+            <section class="usage-section">
+                <h2 class="usage-header">4. Responsive Design</h2>
+                <div class="usage-content">
+                    <p>Make your signature pad work seamlessly across all devices with proper responsive implementation:</p>
+                    
+                    <div class="code-section">
+                        <div class="code-header">CSS for Responsive Canvas</div>
+                        <div class="code-content">
+                            <pre><code>.signature-canvas {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    touch-action: none; /* Prevents scrolling on touch devices */
+}
+
+@media (max-width: 768px) {
+    .signature-canvas {
+        max-width: 100%;
+        height: 200px; /* Fixed height on mobile */
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="code-section">
+                        <div class="code-header">JavaScript for Auto-sizing</div>
+                        <div class="code-content">
+                            <pre><code>function resizeCanvas(canvas) {
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    const rect = canvas.getBoundingClientRect();
+    
+    canvas.width = rect.width * ratio;
+    canvas.height = rect.height * ratio;
+    
+    const ctx = canvas.getContext('2d');
+    ctx.scale(ratio, ratio);
+    
+    // Reinitialize SignaturePad after resize
+    signaturePad.clear();
+}
+
+// Resize on window resize
+window.addEventListener('resize', () =&gt; resizeCanvas(canvas));</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="demo-item">
+                        <h3 class="demo-title">📱 Responsive Demo</h3>
+                        <div class="demo-body">
+                            <p>This signature pad automatically adapts to different screen sizes. Try resizing your browser window!</p>
+                            <div class="signature-container large">
+                                <canvas id="responsive-pad" class="signature-canvas"></canvas>
+                                <div class="signature-status" id="responsive-status">Responsive signature pad - try on mobile!</div>
+                            </div>
+                            <div class="controls">
+                                <button class="btn btn-secondary" onclick="signatureDocs.clearPad('responsive-pad')">Clear</button>
+                                <button class="btn btn-primary" onclick="signatureDocs.exportPNG('responsive-pad', 'responsive-signature')">Save</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-tip">
+                        <div class="quick-tip-title">📱 Mobile Optimization</div>
+                        <p>Always include <code>touch-action: none</code> on your canvas to prevent scrolling issues on touch devices.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Form Integration Section -->
+            <section class="usage-section">
+                <h2 class="usage-header">5. Form Integration</h2>
+                <div class="usage-content">
+                    <p>Integrate signature pads seamlessly with HTML forms for data collection:</p>
+                    
+                    <div class="code-section">
+                        <div class="code-header">HTML Form Structure</div>
+                        <div class="code-content">
+                            <pre><code>&lt;form id="signature-form"&gt;
+    &lt;label for="name"&gt;Full Name:&lt;/label&gt;
+    &lt;input type="text" id="name" name="name" required&gt;
+    
+    &lt;label&gt;Signature:&lt;/label&gt;
+    &lt;canvas id="signature-canvas" width="400" height="200"&gt;&lt;/canvas&gt;
+    &lt;input type="hidden" id="signature-data" name="signature"&gt;
+    
+    &lt;button type="button" onclick="clearSignature()"&gt;Clear&lt;/button&gt;
+    &lt;button type="submit"&gt;Submit Form&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="code-section">
+                        <div class="code-header">Form Handling JavaScript</div>
+                        <div class="code-content">
+                            <pre><code>const form = document.getElementById('signature-form');
+const signatureInput = document.getElementById('signature-data');
+
+form.addEventListener('submit', (e) =&gt; {
+    e.preventDefault();
+    
+    if (signaturePad.isEmpty()) {
+        alert('Please provide a signature before submitting.');
+        return;
+    }
+    
+    // Store signature data in hidden input
+    signatureInput.value = signaturePad.toDataURL();
+    
+    // Now submit the form (or handle data as needed)
+    console.log('Form data ready:', new FormData(form));
+});
+
+function clearSignature() {
+    signaturePad.clear();
+    signatureInput.value = '';
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="demo-item">
+                        <h3 class="demo-title">📝 Form Integration Demo</h3>
+                        <div class="demo-body">
+                            <form id="demo-form" onsubmit="handleFormSubmit(event)">
+                                <div style="margin-bottom: 1rem;">
+                                    <label for="demo-name" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name:</label>
+                                    <input type="text" id="demo-name" name="name" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 6px; font-size: 1rem;">
+                                </div>
+                                
+                                <div style="margin-bottom: 1rem;">
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Digital Signature:</label>
+                                    <div class="signature-container medium">
+                                        <canvas id="form-pad" class="signature-canvas"></canvas>
+                                        <div class="signature-status" id="form-status">Please sign above</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="controls">
+                                    <button type="button" class="btn btn-secondary" onclick="signatureDocs.clearPad('form-pad')">Clear Signature</button>
+                                    <button type="submit" class="btn btn-primary">Submit Form</button>
+                                </div>
+                            </form>
+                            
+                            <div id="form-result" style="margin-top: 1rem; padding: 1rem; background: var(--background-secondary); border-radius: 6px; display: none;">
+                                <h4>Form Submitted Successfully!</h4>
+                                <p><strong>Name:</strong> <span id="result-name"></span></p>
+                                <p><strong>Signature:</strong> Captured and ready for processing</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Next Steps -->
+            <div class="nav-section">
+                <div class="nav-card">
+                    <div class="nav-card-content">
+                        <h3>🚀 Ready for More?</h3>
+                        <p>You've mastered the basics! Ready to explore advanced features like event handling, custom styling, and professional integrations?</p>
+                        <a href="advanced-usage.html" class="btn btn-primary">Advanced Usage Guide</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 SignaturePad.js - Making digital signatures simple and beautiful</p>
+        </div>
+    </footer>
+
+    <script src="shared.js"></script>
+    <script>
+        // Initialize signature pads when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            await signatureDocs.init();
+            
+            // Basic signature pad
+            signatureDocs.createSignaturePad('basic-pad', {
+                backgroundColor: 'rgb(255, 255, 255)',
+                penColor: 'rgb(0, 0, 0)'
+            });
+            
+            // Custom colors pad
+            signatureDocs.createSignaturePad('custom-colors-pad', {
+                backgroundColor: '#f0f8ff',
+                penColor: '#2196F3'
+            });
+            
+            // Thick strokes pad
+            signatureDocs.createSignaturePad('thick-strokes-pad', {
+                backgroundColor: 'rgb(255, 255, 255)',
+                penColor: 'rgb(0, 0, 0)',
+                minWidth: 1.0,
+                maxWidth: 5.0
+            });
+            
+            // Methods demo pad
+            signatureDocs.createSignaturePad('methods-pad', {
+                backgroundColor: 'rgb(255, 255, 255)',
+                penColor: 'rgb(0, 0, 0)'
+            });
+            
+            // Responsive pad
+            signatureDocs.createSignaturePad('responsive-pad', {
+                backgroundColor: 'rgb(255, 255, 255)',
+                penColor: 'rgb(0, 0, 0)'
+            });
+            
+            // Form integration pad
+            signatureDocs.createSignaturePad('form-pad', {
+                backgroundColor: 'rgb(255, 255, 255)',
+                penColor: 'rgb(0, 0, 0)'
+            });
+        });
+        
+        // Interactive method demos
+        function checkIfEmpty(padId) {
+            const pad = signatureDocs.pads[padId];
+            if (pad) {
+                const isEmpty = pad.isEmpty();
+                document.getElementById(padId.replace('-pad', '-status')).textContent = 
+                    isEmpty ? '✓ Canvas is empty' : '✗ Canvas has content';
+            }
+        }
+        
+        function saveAndLoad(padId) {
+            const pad = signatureDocs.pads[padId];
+            if (pad && !pad.isEmpty()) {
+                const data = pad.toDataURL();
+                setTimeout(() => {
+                    pad.clear();
+                    setTimeout(() => {
+                        pad.fromDataURL(data);
+                        document.getElementById(padId.replace('-pad', '-status')).textContent = 
+                            '✓ Signature saved and reloaded!';
+                    }, 500);
+                }, 500);
+            } else {
+                document.getElementById(padId.replace('-pad', '-status')).textContent = 
+                    '⚠️ Draw something first to test save/load';
+            }
+        }
+        
+        // Form submission handler
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const nameInput = document.getElementById('demo-name');
+            const formPad = signatureDocs.pads['form-pad'];
+            
+            if (!nameInput.value.trim()) {
+                alert('Please enter your name.');
+                return;
+            }
+            
+            if (!formPad || formPad.isEmpty()) {
+                alert('Please provide a signature.');
+                return;
+            }
+            
+            // Show success message
+            document.getElementById('result-name').textContent = nameInput.value;
+            document.getElementById('form-result').style.display = 'block';
+            
+            // Update status
+            document.getElementById('form-status').textContent = '✓ Form submitted successfully!';
+            
+            // In a real application, you would send the data to a server
+            console.log('Form submitted with signature data:', formPad.toDataURL());
+        }
+    </script>
+</body>
+</html>
