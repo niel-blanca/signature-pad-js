@@ -279,4 +279,89 @@ describe('SignaturePad', () => {
       expect(onChange).toHaveBeenCalledWith(signaturePad);
     });
   });
+
+  describe('Error Handling', () => {
+    test('should throw error with invalid container', () => {
+      expect(() => {
+        new SignaturePad(null);
+      }).toThrow('SignaturePad: Container must be a valid HTMLElement');
+    });
+
+    test('should throw error with invalid undoLimit', () => {
+      expect(() => {
+        new SignaturePad(container, { undoLimit: 0 });
+      }).toThrow('SignaturePad: undoLimit must be at least 1');
+    });
+
+    test('should throw error with invalid thickness', () => {
+      expect(() => {
+        new SignaturePad(container, { thickness: 0.05 });
+      }).toThrow('SignaturePad: thickness must be at least 0.1');
+    });
+
+    test('should throw error with invalid smoothingFactor', () => {
+      expect(() => {
+        new SignaturePad(container, { smoothingFactor: 1.5 });
+      }).toThrow('SignaturePad: smoothingFactor must be between 0 and 1');
+    });
+  });
+
+  describe('Method Chaining', () => {
+    beforeEach(() => {
+      signaturePad = new SignaturePad(container);
+    });
+
+    test('should support method chaining', () => {
+      const result = signaturePad
+        .setColor('#ff0000')
+        .setThickness(3)
+        .setBackgroundColor('#f0f0f0')
+        .clear();
+
+      expect(result).toBe(signaturePad);
+      expect(signaturePad.opts.color).toBe('#ff0000');
+      expect(signaturePad.opts.thickness).toBe(3);
+      expect(signaturePad.opts.background).toBe('#f0f0f0');
+    });
+  });
+
+  describe('Canvas Utilities', () => {
+    beforeEach(() => {
+      signaturePad = new SignaturePad(container);
+    });
+
+    test('should get bounds correctly', () => {
+      // Add some mock drawing data
+      signaturePad.lines = [
+        [
+          { x: 10, y: 20 },
+          { x: 30, y: 40 }
+        ],
+        [
+          { x: 50, y: 60 },
+          { x: 70, y: 80 }
+        ]
+      ];
+
+      const bounds = signaturePad.getBounds();
+
+      expect(bounds.minX).toBe(10);
+      expect(bounds.minY).toBe(20);
+      expect(bounds.maxX).toBe(70);
+      expect(bounds.maxY).toBe(80);
+      expect(bounds.width).toBe(60);
+      expect(bounds.height).toBe(60);
+    });
+
+    test('should handle empty bounds', () => {
+      const bounds = signaturePad.getBounds();
+
+      expect(bounds.minX).toBe(0);
+      expect(bounds.minY).toBe(0);
+      expect(bounds.maxX).toBe(0);
+      expect(bounds.maxY).toBe(0);
+      expect(bounds.width).toBe(0);
+      expect(bounds.height).toBe(0);
+    });
+  });
 });
