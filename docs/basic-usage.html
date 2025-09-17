@@ -70,7 +70,7 @@ document.getElementById('clear').addEventListener('click', () => {
                         </div>
                     </div>
                     <div class="controls">
-                        <button class="btn btn-secondary" onclick="signaturePads.basic.clear()">Clear</button>
+                        <button class="btn btn-secondary" onclick="signaturePads['basic-pad'].clear()">Clear</button>
                         <div class="status-indicator status-empty" id="basic-status">Canvas is empty</div>
                     </div>
                 </div>
@@ -111,9 +111,9 @@ signaturePad.backgroundColor = '#fff5f5';  // Light red background
                         <div class="control-group">
                             <label>Pen Color:</label>
                             <input type="color" value="#3182ce" class="color-picker" 
-                                   onchange="signaturePads.customColors.penColor = this.value">
+                                   onchange="signaturePads['custom-colors-pad'].penColor = this.value">
                         </div>
-                        <button class="btn btn-secondary" onclick="signaturePads.customColors.clear()">Clear</button>
+                        <button class="btn btn-secondary" onclick="signaturePads['custom-colors-pad'].clear()">Clear</button>
                         <div class="status-indicator status-empty" id="custom-colors-status">Canvas is empty</div>
                     </div>
                 </div>
@@ -153,14 +153,14 @@ signaturePad.maxWidth = 4;
                         <div class="control-group">
                             <label>Min Width: <span id="min-width-value">2</span></label>
                             <input type="range" min="0.5" max="5" step="0.5" value="2" class="thickness-slider"
-                                   oninput="signaturePads.thickStrokes.minWidth = this.value; document.getElementById('min-width-value').textContent = this.value">
+                                   oninput="signaturePads['thick-strokes-pad'].minWidth = this.value; document.getElementById('min-width-value').textContent = this.value">
                         </div>
                         <div class="control-group">
                             <label>Max Width: <span id="max-width-value">5</span></label>
                             <input type="range" min="1" max="10" step="0.5" value="5" class="thickness-slider"
-                                   oninput="signaturePads.thickStrokes.maxWidth = this.value; document.getElementById('max-width-value').textContent = this.value">
+                                   oninput="signaturePads['thick-strokes-pad'].maxWidth = this.value; document.getElementById('max-width-value').textContent = this.value">
                         </div>
-                        <button class="btn btn-secondary" onclick="signaturePads.thickStrokes.clear()">Clear</button>
+                        <button class="btn btn-secondary" onclick="signaturePads['thick-strokes-pad'].clear()">Clear</button>
                         <div class="status-indicator status-empty" id="thick-strokes-status">Canvas is empty</div>
                     </div>
                 </div>
@@ -204,7 +204,7 @@ signaturePad.on();   // Enable
                     </div>
                     <div class="controls">
                         <button class="btn btn-primary" onclick="downloadSignature('methods')">Download PNG</button>
-                        <button class="btn btn-secondary" onclick="signaturePads.methods.clear()">Clear</button>
+                        <button class="btn btn-secondary" onclick="signaturePads['methods-pad'].clear()">Clear</button>
                         <button class="btn btn-info" onclick="togglePad('methods')" id="toggle-methods">Disable Drawing</button>
                         <div class="status-indicator status-empty" id="methods-status">Canvas is empty</div>
                     </div>
@@ -246,7 +246,7 @@ resizeCanvas(); // Initialize
                         </div>
                     </div>
                     <div class="controls">
-                        <button class="btn btn-secondary" onclick="signaturePads.responsive.clear()">Clear</button>
+                        <button class="btn btn-secondary" onclick="signaturePads['responsive-pad'].clear()">Clear</button>
                         <div class="status-indicator status-empty" id="responsive-status">Canvas is empty</div>
                     </div>
                 </div>
@@ -296,7 +296,7 @@ document.getElementById('signature-form').addEventListener('submit', (e) => {
                         <input type="hidden" name="signature" id="form-signature-data">
                         <div class="controls">
                             <button type="submit" class="btn btn-success">Submit Form</button>
-                            <button type="button" class="btn btn-secondary" onclick="signaturePads.form.clear()">Clear</button>
+                            <button type="button" class="btn btn-secondary" onclick="signaturePads['form-pad'].clear()">Clear</button>
                             <div class="status-indicator status-empty" id="form-status">Canvas is empty</div>
                         </div>
                     </form>
@@ -339,12 +339,12 @@ document.getElementById('signature-form').addEventListener('submit', (e) => {
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize all signature pads with different configurations
             signaturePads.init([
-                { id: 'basic', config: {} },
-                { id: 'customColors', config: { penColor: '#3182ce', backgroundColor: '#f7fafc' } },
-                { id: 'thickStrokes', config: { minWidth: 2, maxWidth: 5 } },
-                { id: 'methods', config: {} },
-                { id: 'responsive', config: {} },
-                { id: 'form', config: {} }
+                { id: 'basic-pad', options: {} },
+                { id: 'custom-colors-pad', options: { penColor: '#3182ce', backgroundColor: '#f7fafc' } },
+                { id: 'thick-strokes-pad', options: { minWidth: 2, maxWidth: 5 } },
+                { id: 'methods-pad', options: {} },
+                { id: 'responsive-pad', options: {} },
+                { id: 'form-pad', options: {} }
             ]);
         });
 
@@ -381,7 +381,7 @@ document.getElementById('signature-form').addEventListener('submit', (e) => {
 
         function handleFormSubmit(event) {
             event.preventDefault();
-            const pad = signaturePads.form;
+            const pad = signaturePads['form-pad'];
             
             if (pad.isEmpty()) {
                 alert('Please provide a signature first.');

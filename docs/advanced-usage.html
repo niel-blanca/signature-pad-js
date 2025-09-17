@@ -114,7 +114,7 @@ const signaturePad = new SignaturePad(canvas, {
                         </div>
                     </div>
                     <div class="controls">
-                        <button class="btn btn-secondary" onclick="signaturePads.config.clear()">Clear</button>
+                        <button class="btn btn-secondary" onclick="signaturePads['config-pad'].clear()">Clear</button>
                         <div class="status-indicator status-empty" id="config-status">Canvas is empty</div>
                     </div>
                 </div>
@@ -166,7 +166,7 @@ signaturePad.addEventListener('endStroke', function(event) {
                         </div>
                     </div>
                     <div class="controls">
-                        <button class="btn btn-secondary" onclick="signaturePads.events.clear()">Clear</button>
+                        <button class="btn btn-secondary" onclick="signaturePads['events-pad'].clear()">Clear</button>
                         <div class="status-indicator status-empty" id="events-status">Canvas is empty</div>
                     </div>
                     <div class="output-section">
@@ -224,7 +224,7 @@ signaturePad.fromDataURL(savedSignature);
                         <button class="btn btn-primary" onclick="exportSignature('svg')">Export SVG</button>
                         <button class="btn btn-info" onclick="saveSignature()">Save to Memory</button>
                         <button class="btn btn-success" onclick="loadSignature()">Load from Memory</button>
-                        <button class="btn btn-secondary" onclick="signaturePads.export.clear()">Clear</button>
+                        <button class="btn btn-secondary" onclick="signaturePads['export-pad'].clear()">Clear</button>
                         <div class="status-indicator status-empty" id="export-status">Canvas is empty</div>
                     </div>
                     <div class="output-section">
@@ -285,7 +285,7 @@ function cleanup() {
                         </div>
                     </div>
                     <div class="controls">
-                        <button class="btn btn-secondary" onclick="signaturePads.performance.clear()">Clear</button>
+                        <button class="btn btn-secondary" onclick="signaturePads['performance-pad'].clear()">Clear</button>
                         <div class="status-indicator status-empty" id="performance-status">Canvas is empty</div>
                     </div>
                 </div>
@@ -407,10 +407,10 @@ function validateAllSignatures() {
         // Initialize signature pads when page loads
         document.addEventListener('DOMContentLoaded', function() {
             signaturePads.init([
-                { id: 'config', config: { backgroundColor: '#ffffff', penColor: '#000000' } },
+                { id: 'config-pad', options: { backgroundColor: '#ffffff', penColor: '#000000' } },
                 { 
-                    id: 'events', 
-                    config: {
+                    id: 'events-pad', 
+                    options: {
                         onBegin: function() {
                             logEvent('Drawing started');
                         },
@@ -419,17 +419,17 @@ function validateAllSignatures() {
                         }
                     }
                 },
-                { id: 'export', config: {} },
-                { id: 'performance', config: { throttle: 8, minPointDistance: 3, velocityFilterWeight: 0.9 } },
-                { id: 'customer', config: { penColor: '#3182ce' } },
-                { id: 'witness', config: { penColor: '#e53e3e' } },
-                { id: 'agent', config: { penColor: '#38a169' } }
+                { id: 'export-pad', options: {} },
+                { id: 'performance-pad', options: { throttle: 8, minPointDistance: 3, velocityFilterWeight: 0.9 } },
+                { id: 'customer-pad', options: { penColor: '#3182ce' } },
+                { id: 'witness-pad', options: { penColor: '#e53e3e' } },
+                { id: 'agent-pad', options: { penColor: '#38a169' } }
             ]);
         });
 
         // Configuration functions
         function updateConfig(property, value) {
-            const pad = signaturePads.config;
+            const pad = signaturePads['config-pad'];
             if (pad) {
                 pad[property] = value;
                 updateConfigCode();
@@ -468,7 +468,7 @@ const signaturePad = new SignaturePad(canvas, {
 
         // Export functions
         function exportSignature(format) {
-            const pad = signaturePads.export;
+            const pad = signaturePads['export-pad'];
             if (pad.isEmpty()) {
                 alert('Please draw a signature first!');
                 return;
@@ -497,7 +497,7 @@ const signaturePad = new SignaturePad(canvas, {
         }
 
         function saveSignature() {
-            const pad = signaturePads.export;
+            const pad = signaturePads['export-pad'];
             if (pad.isEmpty()) {
                 alert('Please draw a signature first!');
                 return;
@@ -511,13 +511,13 @@ const signaturePad = new SignaturePad(canvas, {
                 alert('No signature data saved! Please save a signature first.');
                 return;
             }
-            signaturePads.export.fromDataURL(savedSignatureData);
+            signaturePads['export-pad'].fromDataURL(savedSignatureData);
             alert('Signature loaded from memory!');
         }
 
         // Multiple pads functions
         function validateAllPads() {
-            const pads = ['customer', 'witness', 'agent'];
+            const pads = ['customer-pad', 'witness-pad', 'agent-pad'];
             const results = pads.map(id => ({
                 id,
                 isEmpty: signaturePads[id].isEmpty()
@@ -531,14 +531,14 @@ const signaturePad = new SignaturePad(canvas, {
         }
 
         function clearAllPads() {
-            ['customer', 'witness', 'agent'].forEach(id => {
+            ['customer-pad', 'witness-pad', 'agent-pad'].forEach(id => {
                 signaturePads[id].clear();
             });
         }
 
         function exportAllPads() {
             const results = {};
-            ['customer', 'witness', 'agent'].forEach(id => {
+            ['customer-pad', 'witness-pad', 'agent-pad'].forEach(id => {
                 if (!signaturePads[id].isEmpty()) {
                     results[id] = signaturePads[id].toDataURL();
                 }

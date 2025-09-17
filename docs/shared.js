@@ -7,24 +7,31 @@ class SignaturePadDocs {
 
     async init() {
         if (this.isLibraryLoaded) return;
-        await this.loadLibrary();
+        
+        // Wait for library to be available (it should already be loaded by HTML)
+        await this.waitForLibrary();
         this.isLibraryLoaded = true;
     }
 
-    async loadLibrary() {
+    async waitForLibrary() {
+        // Wait for SignaturePad to be available (loaded by HTML script tag)
         return new Promise((resolve, reject) => {
-            // Use the standard signature_pad library from CDN
-            const script = document.createElement('script');
-            script.onload = () => {
-                console.log('✅ SignaturePad library loaded successfully');
-                resolve();
+            let attempts = 0;
+            const maxAttempts = 50; // 5 seconds max wait
+            
+            const checkLibrary = () => {
+                if (typeof window.SignaturePad !== 'undefined') {
+                    console.log('✅ SignaturePad library is available');
+                    resolve();
+                } else if (attempts++ < maxAttempts) {
+                    setTimeout(checkLibrary, 100);
+                } else {
+                    console.error('❌ SignaturePad library not found after waiting');
+                    reject(new Error('SignaturePad library not available'));
+                }
             };
-            script.onerror = () => {
-                console.error('❌ Failed to load SignaturePad library');
-                reject(new Error('Failed to load SignaturePad library'));
-            };
-            script.src = 'https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js';
-            document.head.appendChild(script);
+            
+            checkLibrary();
         });
     }
 
@@ -88,14 +95,22 @@ class SignaturePadDocs {
             const pad = new window.SignaturePad(canvas, finalOptions);
             this.pads[containerId] = pad;
             
+            // Add convenience methods to the pad instance
+            pad.clear = function() {
+                window.SignaturePad.prototype.clear.call(this);
+                // Update status after clearing
+                if (container) container.classList.remove('has-content');
+                signatureDocs.updateStatus(containerId, this);
+            };
+            
             // Set up event handlers if available
-            if (pad.on) {
-                pad.on('beginStroke', () => {
+            if (pad.addEventListener) {
+                pad.addEventListener('beginStroke', () => {
                     this.updateStatus(containerId, pad);
                     if (container) container.classList.add('has-content');
                 });
                 
-                pad.on('endStroke', () => {
+                pad.addEventListener('endStroke', () => {
                     this.updateStatus(containerId, pad);
                 });
             }
@@ -194,5 +209,57 @@ class SignaturePadDocs {
     }
 }
 
-// Create global instance
+// Create global instance - available as both signatureDocs and signaturePads for compatibility
 const signatureDocs = new SignaturePadDocs();
+
+// Global signature pads manager for easy access across all pages
+const signaturePads = {
+    init: async function(padConfigs = []) {
+        try {
+            // Wait for the signature pad library to load
+            await signatureDocs.init();
+            
+            // Initialize each configured pad
+            padConfigs.forEach(config => {
+                const { id, options = {} } = config;
+                const pad = signatureDocs.createSignaturePad(id, options);
+                // Make the pad accessible as a property (e.g., signaturePads.basic)
+                this[id] = pad;
+            });
+            
+            console.log('✅ All signature pads initialized successfully');
+            return true;
+        } catch (error) {
+            console.error('❌ Failed to initialize signature pads:', error);
+            return false;
+        }
+    },
+    
+    // Convenience methods that delegate to signatureDocs
+    clear: function(id) {
+        return signatureDocs.clearPad(id);
+    },
+    
+    exportPNG: function(id, filename) {
+        return signatureDocs.exportPNG(id, filename);
+    },
+    
+    exportSVG: function(id, filename) {
+        return signatureDocs.exportSVG(id, filename);
+    },
+    
+    exportJSON: function(id, filename) {
+        return signatureDocs.exportJSON(id, filename);
+    },
+    
+    // Get a specific pad instance
+    getPad: function(id) {
+        return signatureDocs.pads[id];
+    },
+    
+    // Check if a pad exists and is not empty
+    isEmpty: function(id) {
+        const pad = this.getPad(id);
+        return !pad || pad.isEmpty();
+    }
+};

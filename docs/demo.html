@@ -239,8 +239,8 @@ No data exported yet. Use the export buttons above to see output here.
         document.addEventListener('DOMContentLoaded', function() {
             signaturePads.init([
                 { 
-                    id: 'main', 
-                    config: {
+                    id: 'main-pad', 
+                    options: {
                         penColor: '#000000',
                         backgroundColor: '#ffffff',
                         minWidth: 0.5,
@@ -259,7 +259,7 @@ No data exported yet. Use the export buttons above to see output here.
                     }
                 }
             ]);
-            mainPad = signaturePads.main;
+            mainPad = signaturePads['main-pad'];
         });
 
         // Update functions
