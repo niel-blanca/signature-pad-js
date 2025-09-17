@@ -2,16 +2,17 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop, beta ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [18, 20]
     
     steps:
       - name: Checkout code
@@ -23,11 +24,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Clean install dependencies
-        run: |
-          rm -rf node_modules package-lock.json
-          npm install
-
+      - name: Install dependencies
+        run: npm ci
+          
       - name: Run linting
         run: npm run lint:check
 
@@ -37,48 +36,13 @@ jobs:
       - name: Run tests
         run: npm run test
 
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-
-      - name: Clean install dependencies
-        run: |
-          rm -rf node_modules package-lock.json
-          npm install
-
-      - name: Build package
-        run: npm run build
-
-      - name: Run package validation
-        run: npm pack --dry-run
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-files-${{ github.sha }}
-          path: |
-            dist/
-            package.json
-            README.md
-            LICENSE
-
-  publish-github:
-    needs: build
+  build-and-deploy:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
       contents: read
       packages: write
+      id-token: write
     
     steps:
       - name: Checkout code
@@ -87,48 +51,37 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
-          registry-url: https://npm.pkg.github.com/
-          scope: '@niel-blanca'
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Run validation
+        run: npm run validate
 
       - name: Build package
         run: npm run build
 
-      - name: Configure package for GitHub Packages
-        run: |
-          cp package.json package.json.bak
-          sed -i 's/"name": "@niel-blanca\/signature-pad"/"name": "@niel-blanca\/signature-pad"/g' package.json
+      - name: Verify package contents
+        run: npm pack --dry-run
+
+      # Publish to NPM
+      - name: Publish to NPM
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Setup for GitHub Packages
+      - name: Setup Node.js for GitHub Packages
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@niel-blanca'
 
       - name: Publish to GitHub Packages
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  publish-npm:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && contains(github.event.head_commit.message, '[release]')
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          registry-url: https://registry.npmjs.org/
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build package
-        run: npm run build
-
-      - name: Publish to NPM
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -44,7 +44,11 @@
     "prepublishOnly": "npm run validate && npm run build",
     "validate": "npm run lint:check && npm run format:check && npm run test",
     "version": "npm run build && git add dist/",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "release:patch": "npm version patch && git push origin --tags",
+    "release:minor": "npm version minor && git push origin --tags",
+    "release:major": "npm version major && git push origin --tags",
+    "merge-to-main": "echo 'Ready to merge to main for auto-deployment!'"
   },
   "keywords": [
     "signature",
