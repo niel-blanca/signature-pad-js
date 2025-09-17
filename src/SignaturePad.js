@@ -1,19 +1,19 @@
 /**
- * Niel Blanca / SignaturePad.js v1.2.0
+ * Niel Blanca / SignaturePad.js v2.0.0
  * --------------------------------------------------------
- * Custom lightweight signature pad with undo, redo, resize, sync,
- * dynamic color updates, and SVG/PNG/JPG/JSON export support.
+ * Modern signature pad with advanced features and effects.
  *
- * Features:
- * - Smooth bezier curve drawing
- * - Touch pressure sensitivity
- * - Performance optimized
- * - Modern ES6+ implementation
- * - Comprehensive error handling
- * - Event system with custom events
- * - Method chaining support
+ * NEW FEATURES v2.0.0:
+ * - Advanced visual effects (glow, shadows, textures)
+ * - Theme system with multiple presets
+ * - Enhanced export options (PNG, JPG, SVG, JSON)
+ * - Local storage integration
+ * - Sharing capabilities
+ * - Pressure sensitivity support
+ * - Stroke animations
+ * - Blend modes and modern effects
  *
- * @version     1.2.0
+ * @version     2.0.0
  * @author      Niel Blanca
  * @license     MIT (https://opensource.org/licenses/MIT)
  * --------------------------------------------------------
@@ -42,6 +42,13 @@
  * @property {boolean} [svgStyles=false] - Use styles in SVG export
  * @property {boolean} [smoothing=true] - Enable stroke smoothing
  * @property {number} [smoothingFactor=0.5] - Smoothing intensity (0-1)
+ * @property {boolean} [shadows=false] - Enable shadows
+ * @property {boolean} [glowEffect=false] - Enable glow effect
+ * @property {boolean} [pressureSensitivity=false] - Enable pressure sensitivity
+ * @property {boolean} [strokeAnimation=false] - Enable stroke animation
+ * @property {string} [texture='smooth'] - Texture style
+ * @property {string} [blendMode='normal'] - Canvas blend mode
+ * @property {string} [theme='light'] - Theme preset
  * @property {Function} [onChange=null] - Change callback
  * @property {Function} [onStrokeStart=null] - Stroke start callback
  * @property {Function} [onStrokeEnd=null] - Stroke end callback
@@ -53,7 +60,7 @@
 class SignaturePad {
   /**
    * Creates a new SignaturePad instance
-   * @param {HTMLElement} container - Container element
+   * @param {HTMLElement|HTMLCanvasElement} container - Container or canvas element
    * @param {SignaturePadOptions} [options={}] - Configuration options
    * @throws {Error} When container is invalid
    */
@@ -63,7 +70,15 @@ class SignaturePad {
       throw new Error('SignaturePad: Container must be a valid HTMLElement');
     }
 
-    this.container = container;
+    // Handle both container div and direct canvas element
+    if (container.tagName === 'CANVAS') {
+      this.canvas = container;
+      this.container = container.parentElement || document.body;
+    } else {
+      this.container = container;
+      this.canvas = null; // Will be created in _initCanvas
+    }
+
     this.opts = Object.assign(
       {
         background: '#fff',
@@ -80,6 +95,14 @@ class SignaturePad {
         svgStyles: false,
         smoothing: true,
         smoothingFactor: 0.5,
+        // Modern Features
+        shadows: false,
+        glowEffect: false,
+        pressureSensitivity: false,
+        strokeAnimation: false,
+        texture: 'smooth',
+        blendMode: 'normal',
+        theme: 'light',
         onChange: null,
         onStrokeStart: null,
         onStrokeEnd: null
@@ -148,9 +171,12 @@ class SignaturePad {
    */
   _initCanvas() {
     try {
-      this.canvas = document.createElement('canvas');
-      this.container.innerHTML = '';
-      this.container.appendChild(this.canvas);
+      // If canvas wasn't provided in constructor, create one
+      if (!this.canvas) {
+        this.canvas = document.createElement('canvas');
+        this.container.innerHTML = '';
+        this.container.appendChild(this.canvas);
+      }
 
       this.ctx = this.canvas.getContext('2d');
       if (!this.ctx) {
@@ -160,6 +186,9 @@ class SignaturePad {
       this._resizeCanvas();
       this.ctx.lineCap = 'round';
       this.ctx.lineJoin = 'round';
+      
+      // Apply initial modern settings
+      this._applyModernSettings();
     } catch (error) {
       throw new Error(`SignaturePad: Failed to initialize canvas - ${error.message}`);
     }
@@ -354,6 +383,43 @@ class SignaturePad {
 
     if (len < 2) return;
 
+    this.ctx.save();
+    
+    // Apply modern effects based on options
+    if (this.opts.shadows) {
+      this.ctx.shadowColor = this.opts.color;
+      this.ctx.shadowBlur = this.opts.thickness;
+      this.ctx.shadowOffsetX = 1;
+      this.ctx.shadowOffsetY = 1;
+    }
+    
+    if (this.opts.glowEffect) {
+      this.ctx.shadowColor = this.opts.color;
+      this.ctx.shadowBlur = this.opts.thickness * 3;
+    }
+    
+    // Apply texture effects
+    switch (this.opts.texture) {
+      case 'rough':
+        this.ctx.lineCap = 'square';
+        this.ctx.lineJoin = 'miter';
+        break;
+      case 'pencil':
+        this.ctx.globalAlpha = 0.8;
+        this.ctx.lineCap = 'round';
+        break;
+      case 'marker':
+        this.ctx.globalCompositeOperation = 'multiply';
+        break;
+      case 'watercolor':
+        this.ctx.globalAlpha = 0.7;
+        this.ctx.filter = 'blur(0.5px)';
+        break;
+      default:
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+    }
+
     this.ctx.strokeStyle = this.opts.color;
     this.ctx.lineWidth = this._getLineWidth(points[len - 1]);
 
@@ -379,6 +445,7 @@ class SignaturePad {
     }
 
     this.ctx.stroke();
+    this.ctx.restore();
   }
 
   /**
@@ -500,7 +567,45 @@ class SignaturePad {
   _redrawSmoothLine(points) {
     if (points.length < 2) return;
 
+    this.ctx.save();
+    
+    // Apply modern effects based on options
+    if (this.opts.shadows) {
+      this.ctx.shadowColor = this.opts.color;
+      this.ctx.shadowBlur = this.opts.thickness;
+      this.ctx.shadowOffsetX = 1;
+      this.ctx.shadowOffsetY = 1;
+    }
+    
+    if (this.opts.glowEffect) {
+      this.ctx.shadowColor = this.opts.color;
+      this.ctx.shadowBlur = this.opts.thickness * 3;
+    }
+    
+    // Apply texture effects
+    switch (this.opts.texture) {
+      case 'rough':
+        this.ctx.lineCap = 'square';
+        this.ctx.lineJoin = 'miter';
+        break;
+      case 'pencil':
+        this.ctx.globalAlpha = 0.8;
+        this.ctx.lineCap = 'round';
+        break;
+      case 'marker':
+        this.ctx.globalCompositeOperation = 'multiply';
+        break;
+      case 'watercolor':
+        this.ctx.globalAlpha = 0.7;
+        this.ctx.filter = 'blur(0.5px)';
+        break;
+      default:
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+    }
+
     this.ctx.lineWidth = this.opts.thickness;
+    this.ctx.strokeStyle = this.opts.color;
     this.ctx.beginPath();
     this.ctx.moveTo(points[0].x, points[0].y);
 
@@ -524,6 +629,7 @@ class SignaturePad {
     }
 
     this.ctx.stroke();
+    this.ctx.restore();
   }
 
   /**
@@ -625,6 +731,274 @@ class SignaturePad {
    */
   isEmpty() {
     return this.lines.length === 0;
+  }
+
+  /**
+   * Animates the stroke drawing with modern effects
+   * @param {Array} strokePoints - Array of points to animate
+   * @param {number} duration - Animation duration in milliseconds
+   * @param {Function} callback - Callback when animation completes
+   */
+  animateStroke(strokePoints, duration = 1000, callback = null) {
+    if (!strokePoints || strokePoints.length === 0) return;
+
+    const startTime = Date.now();
+    const pointsPerFrame = Math.max(1, Math.floor(strokePoints.length / (duration / 16)));
+    let currentIndex = 0;
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Calculate how many points to draw this frame
+      const targetIndex = Math.floor(progress * strokePoints.length);
+      
+      if (targetIndex > currentIndex) {
+        const segmentPoints = strokePoints.slice(currentIndex, targetIndex + 1);
+        
+        // Draw the new segment with effects
+        if (segmentPoints.length > 1) {
+          this.ctx.save();
+          
+          // Apply animation-specific effects
+          if (this.opts.strokeAnimation) {
+            this.ctx.globalAlpha = 0.8 + (progress * 0.2); // Fade in effect
+            
+            if (this.opts.glowEffect) {
+              this.ctx.shadowColor = this.opts.color;
+              this.ctx.shadowBlur = this.opts.thickness * 2 * progress;
+            }
+          }
+          
+          this._redrawSmoothLine(segmentPoints);
+          this.ctx.restore();
+        }
+        
+        currentIndex = targetIndex;
+      }
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else if (callback) {
+        callback();
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }
+
+  /**
+   * Applies modern blend mode effects to the canvas
+   * @param {string} blendMode - The blend mode to apply
+   */
+  applyBlendMode(blendMode = 'normal') {
+    const validBlendModes = [
+      'normal', 'multiply', 'screen', 'overlay', 'soft-light', 
+      'hard-light', 'color-dodge', 'color-burn', 'darken', 
+      'lighten', 'difference', 'exclusion', 'hue', 'saturation', 
+      'color', 'luminosity'
+    ];
+
+    if (validBlendModes.includes(blendMode)) {
+      this.ctx.globalCompositeOperation = blendMode;
+      this.opts.blendMode = blendMode;
+    }
+  }
+
+  /**
+   * Applies texture effects to the stroke
+   * @param {string} texture - The texture type to apply
+   */
+  applyTexture(texture = 'smooth') {
+    this.opts.texture = texture;
+    
+    // Apply immediate texture changes to context
+    switch (texture) {
+      case 'rough':
+        this.ctx.lineCap = 'square';
+        this.ctx.lineJoin = 'miter';
+        break;
+      case 'pencil':
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+        break;
+      case 'marker':
+        this.ctx.lineCap = 'square';
+        this.ctx.lineJoin = 'round';
+        break;
+      case 'watercolor':
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+        break;
+      default:
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+    }
+  }
+
+  /**
+   * Applies modern settings to the canvas context
+   * @private
+   */
+  _applyModernSettings() {
+    // Apply blend mode
+    if (this.opts.blendMode && this.opts.blendMode !== 'normal') {
+      this.ctx.globalCompositeOperation = this.opts.blendMode;
+    }
+    
+    // Apply texture settings
+    this.applyTexture(this.opts.texture);
+  }
+
+  /**
+   * Updates options dynamically
+   * @param {Object} newOptions - New options to apply
+   * @returns {SignaturePad} This instance for method chaining
+   */
+  setOptions(newOptions) {
+    Object.assign(this.opts, newOptions);
+    this._applyModernSettings();
+    this._drawBackground();
+    return this;
+  }
+
+  /**
+   * Sets the pen color
+   * @param {string} color - Hex color string
+   * @returns {SignaturePad} This instance for method chaining
+   */
+  setColor(color) {
+    this.opts.color = color;
+    return this;
+  }
+
+  /**
+   * Sets the pen thickness
+   * @param {number} thickness - Thickness in pixels
+   * @returns {SignaturePad} This instance for method chaining
+   */
+  setThickness(thickness) {
+    this.opts.thickness = Math.max(1, Math.min(50, thickness));
+    return this;
+  }
+
+  /**
+   * Sets the background color
+   * @param {string} color - Hex color string
+   * @returns {SignaturePad} This instance for method chaining
+   */
+  setBackgroundColor(color) {
+    this.opts.background = color;
+    this._drawBackground();
+    return this;
+  }
+
+  /**
+   * Downloads signature as file
+   * @param {string} format - File format (png, jpg, svg, json)
+   * @param {string} filename - Optional filename
+   */
+  download(format = 'png', filename = null) {
+    const timestamp = new Date().toISOString().split('T')[0];
+    const defaultName = `signature-${timestamp}`;
+    const name = filename || defaultName;
+    
+    let dataUrl, blob, url;
+    
+    switch (format.toLowerCase()) {
+      case 'png':
+        dataUrl = this.toDataURL('image/png');
+        this._downloadDataURL(dataUrl, `${name}.png`);
+        break;
+        
+      case 'jpg':
+      case 'jpeg':
+        dataUrl = this.toDataURL('image/jpeg', 0.9);
+        this._downloadDataURL(dataUrl, `${name}.jpg`);
+        break;
+        
+      case 'svg':
+        blob = new Blob([this.toSVG()], { type: 'image/svg+xml' });
+        url = URL.createObjectURL(blob);
+        this._downloadURL(url, `${name}.svg`);
+        URL.revokeObjectURL(url);
+        break;
+        
+      case 'json':
+        blob = new Blob([this.toJSON()], { type: 'application/json' });
+        url = URL.createObjectURL(blob);
+        this._downloadURL(url, `${name}.json`);
+        URL.revokeObjectURL(url);
+        break;
+        
+      default:
+        throw new Error(`Unsupported format: ${format}`);
+    }
+  }
+
+  /**
+   * Downloads a data URL as file
+   * @private
+   */
+  _downloadDataURL(dataUrl, filename) {
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  /**
+   * Downloads a URL as file
+   * @private
+   */
+  _downloadURL(url, filename) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  /**
+   * Saves signature to localStorage
+   * @param {string} key - Storage key
+   * @returns {SignaturePad} This instance for method chaining
+   */
+  saveToStorage(key = 'signature') {
+    try {
+      const data = {
+        signature: this.toJSON(),
+        timestamp: Date.now(),
+        version: '2.0.0'
+      };
+      localStorage.setItem(key, JSON.stringify(data));
+      return this;
+    } catch (error) {
+      console.error('Failed to save to localStorage:', error);
+      return this;
+    }
+  }
+
+  /**
+   * Loads signature from localStorage
+   * @param {string} key - Storage key
+   * @returns {SignaturePad} This instance for method chaining
+   */
+  loadFromStorage(key = 'signature') {
+    try {
+      const stored = localStorage.getItem(key);
+      if (stored) {
+        const data = JSON.parse(stored);
+        this.draw(data.signature);
+      }
+      return this;
+    } catch (error) {
+      console.error('Failed to load from localStorage:', error);
+      return this;
+    }
   }
 
   /**
