@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Demo - SignaturePad.js</title>
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        .demo-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M10,10 Q50,5 90,10 Q85,50 90,90 Q50,95 10,90 Q15,50 10,10" fill="none" stroke="white" stroke-width="0.5" opacity="0.1"/></svg>') repeat;
+            background-size: 100px 100px;
+        }
+
+        .demo-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .demo-hero h1 {
+            font-size: 3rem;
+            margin: 0 0 1rem 0;
+            font-weight: 800;
+        }
+
+        .demo-hero p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .playground {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            margin: 3rem 0;
+            min-height: 600px;
+        }
+
+        .main-canvas-area {
+            background: var(--background-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .canvas-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .canvas-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 0;
+        }
+
+        .canvas-info {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .main-signature-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .main-signature-canvas {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            border: 3px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            cursor: crosshair;
+            transition: border-color 0.2s ease;
+        }
+
+        .main-signature-canvas:hover {
+            border-color: var(--primary-color);
+        }
+
+        .main-signature-canvas.drawing {
+            border-color: var(--success-color);
+        }
+
+        .control-panel {
+            background: var(--background-color);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .control-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .control-section h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .control-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .color-preset {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .color-preset:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .color-preset.active {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .brush-preview {
+            width: 100%;
+            height: 60px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: white;
+            margin-top: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.75rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .action-btn.primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .action-btn.secondary {
+            background: var(--background-secondary);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--border-color);
+        }
+
+        .action-btn.danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .action-btn.danger:hover {
+            background: #dc2626;
+        }
+
+        .export-section {
+            margin-top: 1.5rem;
+        }
+
+        .export-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .export-btn {
+            padding: 0.75rem;
+            background: var(--background-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            font-size: 0.8rem;
+        }
+
+        .export-btn:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .stats-display {
+            background: var(--background-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.25rem 0;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .preview-modes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .preview-mode {
+            padding: 0.5rem;
+            background: var(--background-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .preview-mode.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .examples-section {
+            margin: 4rem 0;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .example-card {
+            background: var(--background-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .example-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+        }
+
+        .example-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .example-body {
+            padding: 1.5rem;
+        }
+
+        .example-signature {
+            width: 100%;
+            height: 150px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            background: white;
+            margin: 1rem 0;
+        }
+
+        .load-example-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .load-example-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 1024px) {
+            .playground {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .control-panel {
+                max-height: none;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .demo-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .demo-hero p {
+                font-size: 1.1rem;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .export-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">✍️</span>
+                <span class="logo-text">SignaturePad.js</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="installation.html" class="nav-link">Installation</a>
+                <a href="basic-usage.html" class="nav-link">Basic Usage</a>
+                <a href="advanced-usage.html" class="nav-link">Advanced</a>
+                <a href="demo.html" class="nav-link active">Demo</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="demo-hero">
+        <div class="container">
+            <div class="demo-hero-content">
+                <h1>Interactive Demo Playground</h1>
+                <p>Experience the full power of SignaturePad.js with real-time configuration, multiple export formats, and professional examples. Create, customize, and export signatures with ease.</p>
+            </div>
+        </div>
+    </div>
+
+    <main class="main">
+        <div class="container">
+            <!-- Main Playground -->
+            <div class="playground">
+                <!-- Main Canvas Area -->
+                <div class="main-canvas-area">
+                    <div class="canvas-header">
+                        <div>
+                            <h2 class="canvas-title">Signature Canvas</h2>
+                            <div class="canvas-info">
+                                <span id="canvas-size">Canvas: 600×300</span>
+                                <span id="canvas-status">Ready</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="main-signature-container">
+                        <canvas id="main-demo-pad" class="main-signature-canvas" width="600" height="300"></canvas>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="action-btn secondary" onclick="clearMainCanvas()">🗑️ Clear Canvas</button>
+                        <button class="action-btn primary" onclick="undoLastStroke()">↶ Undo Stroke</button>
+                        <button class="action-btn secondary" onclick="toggleDrawing()">⏸️ Toggle Drawing</button>
+                        <button class="action-btn primary" onclick="showQuickExport()">💾 Quick Save</button>
+                    </div>
+                </div>
+
+                <!-- Control Panel -->
+                <div class="control-panel">
+                    <!-- Pen Settings -->
+                    <div class="control-section">
+                        <h3>🖊️ Pen Settings</h3>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Pen Color</label>
+                            <input type="color" class="control-input" id="pen-color" value="#000000">
+                            <div class="color-grid">
+                                <div class="color-preset" style="background: #000000" onclick="setPenColor('#000000')"></div>
+                                <div class="color-preset" style="background: #2563eb" onclick="setPenColor('#2563eb')"></div>
+                                <div class="color-preset" style="background: #dc2626" onclick="setPenColor('#dc2626')"></div>
+                                <div class="color-preset" style="background: #16a34a" onclick="setPenColor('#16a34a')"></div>
+                                <div class="color-preset" style="background: #ca8a04" onclick="setPenColor('#ca8a04')"></div>
+                                <div class="color-preset" style="background: #9333ea" onclick="setPenColor('#9333ea')"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Min Width: <span id="min-width-display">0.5</span></label>
+                            <input type="range" class="control-input" id="min-width" min="0.1" max="5" step="0.1" value="0.5">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Max Width: <span id="max-width-display">2.5</span></label>
+                            <input type="range" class="control-input" id="max-width" min="1" max="10" step="0.1" value="2.5">
+                        </div>
+                        
+                        <div class="brush-preview" id="brush-preview"></div>
+                    </div>
+
+                    <!-- Canvas Settings -->
+                    <div class="control-section">
+                        <h3>🎨 Canvas Settings</h3>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Background Color</label>
+                            <input type="color" class="control-input" id="bg-color" value="#ffffff">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Velocity Filter: <span id="velocity-display">0.7</span></label>
+                            <input type="range" class="control-input" id="velocity-filter" min="0" max="1" step="0.1" value="0.7">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Throttle (ms): <span id="throttle-display">16</span></label>
+                            <input type="range" class="control-input" id="throttle" min="0" max="50" step="1" value="16">
+                        </div>
+                    </div>
+
+                    <!-- Preview Modes -->
+                    <div class="control-section">
+                        <h3>👁️ Preview Modes</h3>
+                        <div class="preview-modes">
+                            <div class="preview-mode active" onclick="setPreviewMode('normal')">Normal</div>
+                            <div class="preview-mode" onclick="setPreviewMode('invert')">Invert</div>
+                            <div class="preview-mode" onclick="setPreviewMode('sepia')">Sepia</div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="control-section">
+                        <h3>📊 Statistics</h3>
+                        <div class="stats-display">
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <span class="stat-label">Strokes:</span>
+                                    <span class="stat-value" id="stat-strokes">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Points:</span>
+                                    <span class="stat-value" id="stat-points">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Duration:</span>
+                                    <span class="stat-value" id="stat-duration">0s</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">File Size:</span>
+                                    <span class="stat-value" id="stat-size">0 KB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Export Options -->
+                    <div class="control-section">
+                        <h3>💾 Export Options</h3>
+                        <div class="export-grid">
+                            <button class="export-btn" onclick="exportSignature('png')">📷 PNG</button>
+                            <button class="export-btn" onclick="exportSignature('svg')">🎨 SVG</button>
+                            <button class="export-btn" onclick="exportSignature('jpg')">🖼️ JPG</button>
+                            <button class="export-btn" onclick="exportSignature('json')">📋 JSON</button>
+                        </div>
+                        
+                        <div class="action-buttons" style="margin-top: 1rem;">
+                            <button class="action-btn primary" onclick="copyToClipboard()">📋 Copy</button>
+                            <button class="action-btn secondary" onclick="printSignature()">🖨️ Print</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example Signatures -->
+            <section class="examples-section">
+                <h2 class="section-title">Example Signatures</h2>
+                <p class="section-subtitle">Load professional signature examples to see different styles and configurations</p>
+                
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-header">Professional Script</div>
+                        <div class="example-body">
+                            <p>Elegant flowing script style perfect for business documents</p>
+                            <canvas class="example-signature" id="example-1" width="260" height="130"></canvas>
+                            <button class="load-example-btn" onclick="loadExample(1)">Load This Style</button>
+                        </div>
+                    </div>
+                    
+                    <div class="example-card">
+                        <div class="example-header">Bold Executive</div>
+                        <div class="example-body">
+                            <p>Strong, confident strokes ideal for contracts and formal agreements</p>
+                            <canvas class="example-signature" id="example-2" width="260" height="130"></canvas>
+                            <button class="load-example-btn" onclick="loadExample(2)">Load This Style</button>
+                        </div>
+                    </div>
+                    
+                    <div class="example-card">
+                        <div class="example-header">Minimalist Modern</div>
+                        <div class="example-body">
+                            <p>Clean, simple strokes for contemporary digital documents</p>
+                            <canvas class="example-signature" id="example-3" width="260" height="130"></canvas>
+                            <button class="load-example-btn" onclick="loadExample(3)">Load This Style</button>
+                        </div>
+                    </div>
+                    
+                    <div class="example-card">
+                        <div class="example-header">Artistic Flourish</div>
+                        <div class="example-body">
+                            <p>Decorative style with artistic elements and creative flair</p>
+                            <canvas class="example-signature" id="example-4" width="260" height="130"></canvas>
+                            <button class="load-example-btn" onclick="loadExample(4)">Load This Style</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 SignaturePad.js - The ultimate signature capture solution</p>
+        </div>
+    </footer>
+
+    <script src="shared.js"></script>
+    <script>
+        // Global variables
+        let mainPad = null;
+        let examplePads = {};
+        let currentStats = {
+            strokes: 0,
+            points: 0,
+            startTime: Date.now(),
+            dataSize: 0
+        };
+        let drawingEnabled = true;
+        let currentPreviewMode = 'normal';
+
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', async () => {
+            await signatureDocs.init();
+            initializeMainDemo();
+            initializeExamples();
+            setupEventListeners();
+            updateBrushPreview();
+        });
+
+        function initializeMainDemo() {
+            mainPad = signatureDocs.createSignaturePad('main-demo-pad', {
+                backgroundColor: '#ffffff',
+                penColor: '#000000',
+                minWidth: 0.5,
+                maxWidth: 2.5,
+                velocityFilterWeight: 0.7,
+                throttle: 16
+            });
+
+            // Setup main pad events
+            if (mainPad) {
+                mainPad.on('beginStroke', () => {
+                    currentStats.strokes++;
+                    document.getElementById('canvas-status').textContent = 'Drawing...';
+                    document.querySelector('.main-signature-canvas').classList.add('drawing');
+                    updateStats();
+                });
+
+                mainPad.on('endStroke', () => {
+                    document.getElementById('canvas-status').textContent = 'Ready';
+                    document.querySelector('.main-signature-canvas').classList.remove('drawing');
+                    updateStats();
+                    updateDataSize();
+                });
+
+                mainPad.on('beforeUpdateStroke', () => {
+                    currentStats.points++;
+                    updateStats();
+                });
+            }
+        }
+
+        function initializeExamples() {
+            // Create example signature pads
+            for (let i = 1; i <= 4; i++) {
+                examplePads[i] = signatureDocs.createSignaturePad(`example-${i}`, {
+                    backgroundColor: '#ffffff',
+                    penColor: '#333333',
+                    minWidth: 0.8,
+                    maxWidth: 2.0
+                });
+            }
+
+            // Load example signatures
+            setTimeout(() => {
+                loadExampleSignatures();
+            }, 500);
+        }
+
+        function loadExampleSignatures() {
+            // Example 1: Professional Script
+            if (examplePads[1]) {
+                const scriptData = [
+                    {
+                        points: [
+                            {x: 30, y: 80, pressure: 0.5, time: Date.now()},
+                            {x: 50, y: 60, pressure: 0.7, time: Date.now() + 20},
+                            {x: 80, y: 70, pressure: 0.6, time: Date.now() + 40},
+                            {x: 120, y: 50, pressure: 0.8, time: Date.now() + 60},
+                            {x: 160, y: 65, pressure: 0.5, time: Date.now() + 80},
+                            {x: 200, y: 75, pressure: 0.7, time: Date.now() + 100}
+                        ]
+                    }
+                ];
+                examplePads[1].fromData(scriptData);
+            }
+
+            // Example 2: Bold Executive
+            if (examplePads[2]) {
+                const boldData = [
+                    {
+                        points: [
+                            {x: 40, y: 90, pressure: 0.9, time: Date.now()},
+                            {x: 80, y: 50, pressure: 1.0, time: Date.now() + 30},
+                            {x: 120, y: 40, pressure: 0.9, time: Date.now() + 60},
+                            {x: 160, y: 60, pressure: 1.0, time: Date.now() + 90},
+                            {x: 200, y: 80, pressure: 0.8, time: Date.now() + 120}
+                        ]
+                    }
+                ];
+                examplePads[2].fromData(boldData);
+            }
+
+            // Example 3: Minimalist Modern
+            if (examplePads[3]) {
+                const modernData = [
+                    {
+                        points: [
+                            {x: 50, y: 65, pressure: 0.4, time: Date.now()},
+                            {x: 100, y: 65, pressure: 0.4, time: Date.now() + 50},
+                            {x: 150, y: 65, pressure: 0.4, time: Date.now() + 100},
+                            {x: 200, y: 65, pressure: 0.4, time: Date.now() + 150}
+                        ]
+                    }
+                ];
+                examplePads[3].fromData(modernData);
+            }
+
+            // Example 4: Artistic Flourish
+            if (examplePads[4]) {
+                const artisticData = [
+                    {
+                        points: [
+                            {x: 20, y: 90, pressure: 0.3, time: Date.now()},
+                            {x: 40, y: 40, pressure: 0.8, time: Date.now() + 20},
+                            {x: 80, y: 30, pressure: 0.9, time: Date.now() + 40},
+                            {x: 120, y: 50, pressure: 0.7, time: Date.now() + 60},
+                            {x: 160, y: 80, pressure: 0.6, time: Date.now() + 80},
+                            {x: 200, y: 100, pressure: 0.4, time: Date.now() + 100},
+                            {x: 220, y: 60, pressure: 0.3, time: Date.now() + 120}
+                        ]
+                    }
+                ];
+                examplePads[4].fromData(artisticData);
+            }
+        }
+
+        function setupEventListeners() {
+            // Pen color controls
+            document.getElementById('pen-color').addEventListener('input', (e) => {
+                updateMainPadConfig();
+                updateBrushPreview();
+            });
+
+            // Range controls with live updates
+            const rangeControls = ['min-width', 'max-width', 'velocity-filter', 'throttle'];
+            rangeControls.forEach(id => {
+                const control = document.getElementById(id);
+                const display = document.getElementById(id.replace('-', '-') + '-display');
+                
+                control.addEventListener('input', (e) => {
+                    if (display) {
+                        display.textContent = e.target.value;
+                    }
+                    updateMainPadConfig();
+                    updateBrushPreview();
+                });
+            });
+
+            // Background color
+            document.getElementById('bg-color').addEventListener('input', updateMainPadConfig);
+        }
+
+        function updateMainPadConfig() {
+            if (!mainPad) return;
+
+            const config = {
+                backgroundColor: document.getElementById('bg-color').value,
+                penColor: document.getElementById('pen-color').value,
+                minWidth: parseFloat(document.getElementById('min-width').value),
+                maxWidth: parseFloat(document.getElementById('max-width').value),
+                velocityFilterWeight: parseFloat(document.getElementById('velocity-filter').value),
+                throttle: parseInt(document.getElementById('throttle').value)
+            };
+
+            // Save current signature
+            const currentData = mainPad.isEmpty() ? null : mainPad.toData();
+            
+            // Recreate pad with new config
+            mainPad = signatureDocs.createSignaturePad('main-demo-pad', config);
+            
+            // Restore signature if it existed
+            if (currentData) {
+                mainPad.fromData(currentData);
+            }
+
+            // Reattach events
+            mainPad.on('beginStroke', () => {
+                currentStats.strokes++;
+                document.getElementById('canvas-status').textContent = 'Drawing...';
+                document.querySelector('.main-signature-canvas').classList.add('drawing');
+                updateStats();
+            });
+
+            mainPad.on('endStroke', () => {
+                document.getElementById('canvas-status').textContent = 'Ready';
+                document.querySelector('.main-signature-canvas').classList.remove('drawing');
+                updateStats();
+                updateDataSize();
+            });
+
+            mainPad.on('beforeUpdateStroke', () => {
+                currentStats.points++;
+                updateStats();
+            });
+
+            // Apply preview mode
+            applyPreviewMode(currentPreviewMode);
+        }
+
+        function updateBrushPreview() {
+            const preview = document.getElementById('brush-preview');
+            const penColor = document.getElementById('pen-color').value;
+            const minWidth = document.getElementById('min-width').value;
+            const maxWidth = document.getElementById('max-width').value;
+            
+            preview.innerHTML = `
+                <svg width="100%" height="100%" viewBox="0 0 300 60">
+                    <path d="M20,30 Q80,15 150,30 Q220,45 280,30" 
+                          stroke="${penColor}" 
+                          stroke-width="${minWidth}" 
+                          fill="none" 
+                          stroke-linecap="round" 
+                          opacity="0.7"/>
+                    <path d="M20,40 Q80,25 150,40 Q220,55 280,40" 
+                          stroke="${penColor}" 
+                          stroke-width="${maxWidth}" 
+                          fill="none" 
+                          stroke-linecap="round"/>
+                </svg>
+            `;
+        }
+
+        function updateStats() {
+            document.getElementById('stat-strokes').textContent = currentStats.strokes;
+            document.getElementById('stat-points').textContent = currentStats.points;
+            
+            const duration = Math.floor((Date.now() - currentStats.startTime) / 1000);
+            document.getElementById('stat-duration').textContent = duration + 's';
+        }
+
+        function updateDataSize() {
+            if (mainPad && !mainPad.isEmpty()) {
+                const dataUrl = mainPad.toDataURL();
+                const sizeKB = Math.round(dataUrl.length / 1024);
+                document.getElementById('stat-size').textContent = sizeKB + ' KB';
+            }
+        }
+
+        // Main canvas controls
+        function clearMainCanvas() {
+            if (mainPad) {
+                mainPad.clear();
+                currentStats = { strokes: 0, points: 0, startTime: Date.now(), dataSize: 0 };
+                updateStats();
+                document.getElementById('stat-size').textContent = '0 KB';
+                document.getElementById('canvas-status').textContent = 'Ready';
+            }
+        }
+
+        function undoLastStroke() {
+            if (mainPad) {
+                const data = mainPad.toData();
+                if (data.length > 0) {
+                    data.pop(); // Remove last stroke
+                    mainPad.fromData(data);
+                    currentStats.strokes = Math.max(0, currentStats.strokes - 1);
+                    updateStats();
+                    updateDataSize();
+                }
+            }
+        }
+
+        function toggleDrawing() {
+            drawingEnabled = !drawingEnabled;
+            if (mainPad) {
+                if (drawingEnabled) {
+                    mainPad.on();
+                    document.querySelector('[onclick="toggleDrawing()"]').innerHTML = '⏸️ Pause Drawing';
+                    document.getElementById('canvas-status').textContent = 'Ready';
+                } else {
+                    mainPad.off();
+                    document.querySelector('[onclick="toggleDrawing()"]').innerHTML = '▶️ Resume Drawing';
+                    document.getElementById('canvas-status').textContent = 'Drawing Paused';
+                }
+            }
+        }
+
+        function showQuickExport() {
+            if (!mainPad || mainPad.isEmpty()) {
+                alert('Please create a signature first!');
+                return;
+            }
+            
+            exportSignature('png');
+        }
+
+        // Color presets
+        function setPenColor(color) {
+            document.getElementById('pen-color').value = color;
+            updateMainPadConfig();
+            updateBrushPreview();
+            
+            // Update active color preset
+            document.querySelectorAll('.color-preset').forEach(preset => {
+                preset.classList.remove('active');
+            });
+            document.querySelector(`[style*="${color}"]`).classList.add('active');
+        }
+
+        // Preview modes
+        function setPreviewMode(mode) {
+            currentPreviewMode = mode;
+            
+            // Update active mode button
+            document.querySelectorAll('.preview-mode').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            applyPreviewMode(mode);
+        }
+
+        function applyPreviewMode(mode) {
+            const canvas = document.getElementById('main-demo-pad');
+            canvas.style.filter = '';
+            
+            switch (mode) {
+                case 'invert':
+                    canvas.style.filter = 'invert(1)';
+                    break;
+                case 'sepia':
+                    canvas.style.filter = 'sepia(1)';
+                    break;
+                default:
+                    canvas.style.filter = 'none';
+            }
+        }
+
+        // Export functions
+        function exportSignature(format) {
+            if (!mainPad || mainPad.isEmpty()) {
+                alert('Please create a signature first!');
+                return;
+            }
+
+            let dataUrl, filename;
+            
+            switch (format) {
+                case 'png':
+                    dataUrl = mainPad.toDataURL('image/png');
+                    filename = 'signature.png';
+                    break;
+                case 'jpg':
+                    dataUrl = mainPad.toDataURL('image/jpeg', 0.9);
+                    filename = 'signature.jpg';
+                    break;
+                case 'svg':
+                    const svgData = mainPad.toSVG();
+                    dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData);
+                    filename = 'signature.svg';
+                    break;
+                case 'json':
+                    const jsonData = JSON.stringify(mainPad.toData(), null, 2);
+                    dataUrl = 'data:application/json;charset=utf-8,' + encodeURIComponent(jsonData);
+                    filename = 'signature.json';
+                    break;
+            }
+            
+            // Download the file
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = dataUrl;
+            link.click();
+        }
+
+        function copyToClipboard() {
+            if (!mainPad || mainPad.isEmpty()) {
+                alert('Please create a signature first!');
+                return;
+            }
+            
+            mainPad.canvas.toBlob(blob => {
+                const item = new ClipboardItem({ 'image/png': blob });
+                navigator.clipboard.write([item]).then(() => {
+                    alert('Signature copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy to clipboard:', err);
+                    alert('Failed to copy to clipboard. Please try exporting instead.');
+                });
+            });
+        }
+
+        function printSignature() {
+            if (!mainPad || mainPad.isEmpty()) {
+                alert('Please create a signature first!');
+                return;
+            }
+            
+            const dataUrl = mainPad.toDataURL();
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head><title>Print Signature</title></head>
+                    <body style="text-align: center; margin: 50px;">
+                        <h2>Digital Signature</h2>
+                        <img src="${dataUrl}" style="border: 1px solid #ccc; max-width: 100%;">
+                        <script>window.print();<\/script>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        // Example loading
+        function loadExample(exampleNumber) {
+            if (!mainPad || !examplePads[exampleNumber]) return;
+            
+            const exampleData = examplePads[exampleNumber].toData();
+            mainPad.fromData(exampleData);
+            
+            // Update stats
+            currentStats.strokes = exampleData.length;
+            currentStats.points = exampleData.reduce((sum, stroke) => sum + stroke.points.length, 0);
+            updateStats();
+            updateDataSize();
+            
+            document.getElementById('canvas-status').textContent = `Loaded Example ${exampleNumber}`;
+        }
+
+        // Add some visual feedback for interactions
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('action-btn') || 
+                e.target.classList.contains('export-btn') || 
+                e.target.classList.contains('load-example-btn')) {
+                e.target.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    e.target.style.transform = '';
+                }, 150);
+            }
+        });
+    </script>
+</body>
+</html>

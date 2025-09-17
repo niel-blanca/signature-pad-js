@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installation Guide - Signature Pad JS</title>
+    <meta name="description" content="Learn how to install and set up Signature Pad JS in your project. Covers NPM, CDN, and various module systems.">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🖋️</text></svg>">
+    
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="shared.css">
+    
+    <style>
+        .installation-method {
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .method-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .method-icon {
+            font-size: 2rem;
+        }
+        
+        .method-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .method-content {
+            padding: 30px;
+        }
+        
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 25px 0;
+        }
+        
+        .pros, .cons {
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .pros {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .cons {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .pros h4 {
+            color: var(--success-color);
+            margin-bottom: 10px;
+        }
+        
+        .cons h4 {
+            color: var(--danger-color);
+            margin-bottom: 10px;
+        }
+        
+        .pros ul, .cons ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .pros li::before {
+            content: "✅ ";
+            margin-right: 8px;
+        }
+        
+        .cons li::before {
+            content: "❌ ";
+            margin-right: 8px;
+        }
+        
+        .verification-demo {
+            background: var(--bg-light);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 2px dashed var(--border-color);
+        }
+        
+        .verification-title {
+            color: var(--text-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .step-by-step {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+        
+        .step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .step-number {
+            background: var(--info-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .step-content h4 {
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+        
+        .step-content p {
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- GitHub Corner -->
+    <a href="https://github.com/niel-blanca/signature-pad-js" class="github-corner" aria-label="View source on GitHub">
+        <svg viewBox="0 0 250 250" aria-hidden="true">
+            <path d="m0,0 0,250 250,0 0,-250z"/>
+            <path d="m0,0 115,115 0,135 135,0 z" fill="currentColor" style="transform-origin: 130px 106px;" />
+            <path d="m128.3,109.0 c113.8,99.7 119.0,89.6 119.0,89.6 0,0 12.9,23.7 -19.1,35.2 -30.7,11.0 -22.4,25.9 -9.5,25.9 15.7,0 31.5,-21.9 31.5,-21.9 12.7,-22.6 26.6,-20.5 26.6,-20.5 6.2,-2.3 12.6,4.3 12.6,4.3 z" fill="currentColor" style="transform-origin: 130px 106px;" />
+        </svg>
+    </a>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav fade-in">
+            <a href="./" class="nav-logo">🖋️ Signature Pad JS</a>
+            <div class="nav-links">
+                <a href="./" class="nav-link">Home</a>
+                <a href="installation.html" class="nav-link active">Installation</a>
+                <a href="basic-usage.html" class="nav-link">Basic Usage</a>
+                <a href="advanced-usage.html" class="nav-link">Advanced</a>
+                <a href="demo.html" class="nav-link">Demo</a>
+                <a href="https://github.com/niel-blanca/signature-pad-js" class="nav-link">GitHub</a>
+                <a href="https://www.npmjs.com/package/@niel-blanca/signature-pad" class="nav-link">NPM</a>
+            </div>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="section fade-in">
+            <div class="section-header">
+                <h1 class="section-title">🚀 Installation Guide</h1>
+                <p class="section-subtitle">Choose the installation method that best fits your project setup and requirements</p>
+            </div>
+        </div>
+
+        <!-- NPM Installation -->
+        <div class="installation-method fade-in">
+            <div class="method-header">
+                <div class="method-icon">📦</div>
+                <div>
+                    <div class="method-title">NPM Installation</div>
+                    <div style="opacity: 0.9;">Recommended for modern web applications</div>
+                </div>
+            </div>
+            
+            <div class="method-content">
+                <div class="code-block" data-lang="bash">
+# Install via NPM
+npm install @niel-blanca/signature-pad
+
+# Or using Yarn
+yarn add @niel-blanca/signature-pad
+
+# Or using PNPM
+pnpm add @niel-blanca/signature-pad</div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✅ Advantages</h4>
+                        <ul>
+                            <li>Version control and dependency management</li>
+                            <li>Tree shaking support (reduce bundle size)</li>
+                            <li>TypeScript definitions included</li>
+                            <li>Works with bundlers (Webpack, Vite, etc.)</li>
+                            <li>Offline development support</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>❌ Considerations</h4>
+                        <ul>
+                            <li>Requires build process</li>
+                            <li>Need Node.js and package manager</li>
+                            <li>Slightly more complex setup</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-by-step">
+                    <h3 style="margin-bottom: 20px; color: var(--info-color);">📋 Step-by-Step Setup</h3>
+                    
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Install the Package</h4>
+                            <p>Run the installation command in your project directory</p>
+                            <div class="code-block" data-lang="bash">npm install @niel-blanca/signature-pad</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Import the Library</h4>
+                            <p>Import SignaturePad in your JavaScript/TypeScript file</p>
+                            <div class="code-block" data-lang="javascript">
+// ES6 Module Import (recommended)
+import SignaturePad from '@niel-blanca/signature-pad';
+
+// CommonJS (Node.js style)
+const SignaturePad = require('@niel-blanca/signature-pad');</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Create HTML Container</h4>
+                            <p>Add a container element for the signature pad</p>
+                            <div class="code-block" data-lang="html">
+&lt;div id="signature-container" style="width: 100%; height: 300px; border: 1px solid #ccc;">&lt;/div></div>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Initialize the Signature Pad</h4>
+                            <p>Create a new instance and start using it</p>
+                            <div class="code-block" data-lang="javascript">
+const container = document.getElementById('signature-container');
+const signaturePad = new SignaturePad(container);
+
+// Test if it's working
+console.log('Signature pad created successfully!');</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="verification-demo">
+                    <h4 class="verification-title">🧪 Test Your NPM Installation</h4>
+                    <p style="color: var(--text-light); margin-bottom: 20px;">This demo simulates the NPM import experience. Try drawing below:</p>
+                    
+                    <div id="npm-signature-container" class="signature-container medium">
+                        <div class="signature-placeholder">
+                            📦 NPM Installation Demo - Draw to verify it works!
+                        </div>
+                    </div>
+                    
+                    <div id="npm-signature-container-status" class="status-indicator status-empty">
+                        📝 Signature pad initialized via NPM import
+                    </div>
+                    
+                    <div class="controls" style="margin-top: 20px;">
+                        <div class="control-group">
+                            <label>Test Controls</label>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn btn-secondary btn-small" onclick="signaturePadDocs.clearPad('npm-signature-container')">🗑️ Clear</button>
+                                <button class="btn btn-success btn-small" onclick="signaturePadDocs.exportToPNG('npm-signature-container', 'npm-test.png')">📥 Export PNG</button>
+                                <button class="btn btn-info btn-small" onclick="testNpmFeatures()">🔧 Test Features</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="npm-signature-container-output" class="output-section" style="display: none;">
+                        <h4 class="output-title">Test Results</h4>
+                        <div class="output-content"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CDN Installation -->
+        <div class="installation-method fade-in">
+            <div class="method-header">
+                <div class="method-icon">🌐</div>
+                <div>
+                    <div class="method-title">CDN Installation</div>
+                    <div style="opacity: 0.9;">Quick setup for prototyping and simple projects</div>
+                </div>
+            </div>
+            
+            <div class="method-content">
+                <div class="code-block" data-lang="html">
+&lt;!-- Include from UNPKG CDN -->
+&lt;script src="https://unpkg.com/@niel-blanca/signature-pad@latest/dist/signature-pad.min.js">&lt;/script>
+
+&lt;!-- Or from JSDelivr CDN -->
+&lt;script src="https://cdn.jsdelivr.net/npm/@niel-blanca/signature-pad@latest/dist/signature-pad.min.js">&lt;/script></div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✅ Advantages</h4>
+                        <ul>
+                            <li>No build process required</li>
+                            <li>Works directly in browser</li>
+                            <li>Perfect for prototyping</li>
+                            <li>Global CDN for fast loading</li>
+                            <li>Easy to get started</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>❌ Considerations</h4>
+                        <ul>
+                            <li>Requires internet connection</li>
+                            <li>No version locking by default</li>
+                            <li>Global namespace usage</li>
+                            <li>Less control over caching</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-by-step">
+                    <h3 style="margin-bottom: 20px; color: var(--info-color);">📋 Step-by-Step Setup</h3>
+                    
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Include the Script Tag</h4>
+                            <p>Add the CDN script tag to your HTML head or before closing body tag</p>
+                            <div class="code-block" data-lang="html">
+&lt;script src="https://unpkg.com/@niel-blanca/signature-pad@latest/dist/signature-pad.min.js">&lt;/script></div>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Create HTML Container</h4>
+                            <p>Add a container element for the signature pad</p>
+                            <div class="code-block" data-lang="html">
+&lt;div id="my-signature-pad" style="width: 100%; height: 300px; border: 1px solid #ccc;">&lt;/div></div>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Initialize After DOM Load</h4>
+                            <p>Use the global SignaturePad class to create an instance</p>
+                            <div class="code-block" data-lang="javascript">
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('my-signature-pad');
+    const signaturePad = new SignaturePad(container);
+    
+    console.log('CDN signature pad ready!');
+});</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="verification-demo">
+                    <h4 class="verification-title">🧪 Test Your CDN Installation</h4>
+                    <p style="color: var(--text-light); margin-bottom: 20px;">This demo simulates the CDN experience. Try drawing below:</p>
+                    
+                    <div id="cdn-signature-container" class="signature-container medium">
+                        <div class="signature-placeholder">
+                            🌐 CDN Installation Demo - Draw to verify it works!
+                        </div>
+                    </div>
+                    
+                    <div id="cdn-signature-container-status" class="status-indicator status-empty">
+                        📝 Signature pad loaded via CDN
+                    </div>
+                    
+                    <div class="controls" style="margin-top: 20px;">
+                        <div class="control-group">
+                            <label>🎨 Pen Color</label>
+                            <input type="color" id="cdn-color-picker" class="color-picker" value="#ff6b6b" onchange="signaturePadDocs.setColor('cdn-signature-container', this.value)">
+                        </div>
+                        <div class="control-group">
+                            <label>📏 Pen Thickness: <span id="cdn-thickness-value">4</span>px</label>
+                            <input type="range" id="cdn-thickness-slider" class="thickness-slider" min="1" max="10" value="4" oninput="updateCdnThickness(this.value)">
+                        </div>
+                        <div class="control-group">
+                            <label>Test Controls</label>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn btn-secondary btn-small" onclick="signaturePadDocs.clearPad('cdn-signature-container')">🗑️ Clear</button>
+                                <button class="btn btn-success btn-small" onclick="signaturePadDocs.exportToSVG('cdn-signature-container', 'cdn-test.svg')">📥 Export SVG</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direct Download -->
+        <div class="installation-method fade-in">
+            <div class="method-header">
+                <div class="method-icon">💾</div>
+                <div>
+                    <div class="method-title">Direct Download</div>
+                    <div style="opacity: 0.9;">For offline development or specific file hosting</div>
+                </div>
+            </div>
+            
+            <div class="method-content">
+                <p style="margin-bottom: 20px; color: var(--text-light);">Download the library files directly and host them yourself for maximum control.</p>
+                
+                <div class="code-block" data-lang="bash">
+# Download from GitHub releases
+curl -L https://github.com/niel-blanca/signature-pad-js/releases/latest/download/signature-pad.min.js -o signature-pad.min.js
+
+# Or visit the releases page
+# https://github.com/niel-blanca/signature-pad-js/releases</div>
+
+                <div class="step-by-step">
+                    <h3 style="margin-bottom: 20px; color: var(--info-color);">📋 Manual Setup Steps</h3>
+                    
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Download the Files</h4>
+                            <p>Download the minified JavaScript file from GitHub releases</p>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                                <a href="https://github.com/niel-blanca/signature-pad-js/releases" class="btn btn-primary btn-small" target="_blank">📥 Download Latest Release</a>
+                                <a href="https://github.com/niel-blanca/signature-pad-js/tree/main/dist" class="btn btn-secondary btn-small" target="_blank">📁 View Dist Files</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Host the Files</h4>
+                            <p>Place the downloaded files in your web server directory</p>
+                            <div class="code-block" data-lang="text">
+your-project/
+├── js/
+│   └── signature-pad.min.js
+├── index.html
+└── ...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Include in Your HTML</h4>
+                            <p>Reference the local file in your HTML</p>
+                            <div class="code-block" data-lang="html">
+&lt;script src="js/signature-pad.min.js">&lt;/script></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="verification-demo">
+                    <h4 class="verification-title">🧪 Test Local File Installation</h4>
+                    <p style="color: var(--text-light); margin-bottom: 20px;">This demo simulates loading from local files:</p>
+                    
+                    <div id="local-signature-container" class="signature-container medium">
+                        <div class="signature-placeholder">
+                            💾 Local File Demo - Draw to verify it works!
+                        </div>
+                    </div>
+                    
+                    <div id="local-signature-container-status" class="status-indicator status-empty">
+                        📝 Signature pad loaded from local file
+                    </div>
+                    
+                    <div class="controls" style="margin-top: 20px;">
+                        <div class="control-group">
+                            <label>Quick Actions</label>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn btn-secondary btn-small" onclick="signaturePadDocs.clearPad('local-signature-container')">🗑️ Clear</button>
+                                <button class="btn btn-success btn-small" onclick="signaturePadDocs.exportToJSON('local-signature-container', 'local-test.json')">📥 Export JSON</button>
+                                <button class="btn btn-info btn-small" onclick="signaturePadDocs.toggleGuideline('local-signature-container')">📏 Toggle Guide</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Verification Section -->
+        <div class="section fade-in">
+            <div class="section-header">
+                <h2 class="section-title">✅ Verify Your Installation</h2>
+                <p class="section-subtitle">Make sure everything is working correctly with these simple tests</p>
+            </div>
+            
+            <div class="section-content">
+                <div class="code-block" data-lang="javascript">
+// Test 1: Check if SignaturePad is available
+if (typeof SignaturePad !== 'undefined') {
+    console.log('✅ SignaturePad library loaded successfully');
+} else {
+    console.error('❌ SignaturePad library not found');
+}
+
+// Test 2: Create a simple instance
+try {
+    const testContainer = document.createElement('div');
+    testContainer.style.width = '300px';
+    testContainer.style.height = '200px';
+    document.body.appendChild(testContainer);
+    
+    const testPad = new SignaturePad(testContainer);
+    console.log('✅ SignaturePad instance created successfully');
+    
+    // Clean up
+    document.body.removeChild(testContainer);
+} catch (error) {
+    console.error('❌ Failed to create SignaturePad instance:', error);
+}
+
+// Test 3: Check available methods
+const requiredMethods = ['clear', 'isEmpty', 'toDataURL', 'toJSON', 'toSVG'];
+const testContainer = document.createElement('div');
+const testPad = new SignaturePad(testContainer);
+
+requiredMethods.forEach(method => {
+    if (typeof testPad[method] === 'function') {
+        console.log(`✅ Method ${method} is available`);
+    } else {
+        console.error(`❌ Method ${method} is missing`);
+    }
+});</div>
+
+                <div class="features-grid mt-30">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3>Console Verification</h3>
+                        <p>Open browser developer tools and run the verification code above to ensure proper installation.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <h3>Visual Testing</h3>
+                        <p>Try drawing on any of the demo pads above. If they respond to touch/mouse input, you're good to go!</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📤</div>
+                        <h3>Export Testing</h3>
+                        <p>Test the export functionality by drawing something and clicking the export buttons to verify all features work.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="section fade-in">
+            <div class="section-header">
+                <h2 class="section-title">🎯 Next Steps</h2>
+                <p class="section-subtitle">Now that you have Signature Pad JS installed, here's what to do next</p>
+            </div>
+            
+            <div class="section-content">
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <div class="nav-card-icon">📖</div>
+                        <h3>Learn Basic Usage</h3>
+                        <p>Start with simple examples and common patterns to get familiar with the library.</p>
+                        <a href="basic-usage.html" class="btn btn-primary">Start Learning</a>
+                    </div>
+                    
+                    <div class="nav-card">
+                        <div class="nav-card-icon">🎮</div>
+                        <h3>Try the Demo</h3>
+                        <p>Explore all features in an interactive playground with live examples and controls.</p>
+                        <a href="demo.html" class="btn btn-primary">Open Demo</a>
+                    </div>
+                    
+                    <div class="nav-card">
+                        <div class="nav-card-icon">⚙️</div>
+                        <h3>Advanced Features</h3>
+                        <p>Dive into advanced configuration options and professional use cases.</p>
+                        <a href="advanced-usage.html" class="btn btn-primary">Go Advanced</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shared JavaScript -->
+    <script src="shared.js"></script>
+    
+    <script>
+        // Initialize signature pads for this page
+        function initSignaturePads() {
+            // NPM demo pad
+            signaturePadDocs.createSignaturePad('npm-signature-container', {
+                thickness: 2,
+                color: '#667eea',
+                guideline: false
+            });
+            
+            // CDN demo pad with different styling
+            signaturePadDocs.createSignaturePad('cdn-signature-container', {
+                thickness: 4,
+                color: '#ff6b6b',
+                guideline: false
+            });
+            
+            // Local file demo pad
+            signaturePadDocs.createSignaturePad('local-signature-container', {
+                thickness: 3,
+                color: '#34d399',
+                guideline: true
+            });
+        }
+
+        // CDN-specific functions
+        function updateCdnThickness(value) {
+            document.getElementById('cdn-thickness-value').textContent = value;
+            signaturePadDocs.setThickness('cdn-signature-container', parseInt(value));
+        }
+
+        // NPM feature testing
+        function testNpmFeatures() {
+            const pad = signaturePadDocs.pads.get('npm-signature-container');
+            if (!pad) {
+                alert('❌ NPM pad not found!');
+                return;
+            }
+
+            let results = [];
+            
+            // Test basic methods
+            results.push(`isEmpty(): ${pad.isEmpty()}`);
+            results.push(`Container dimensions: ${pad.container.offsetWidth}x${pad.container.offsetHeight}`);
+            
+            // Test configuration
+            pad.setColor('#ff0000');
+            results.push('✅ setColor() method works');
+            
+            pad.setThickness(5);
+            results.push('✅ setThickness() method works');
+            
+            // Reset
+            pad.setColor('#667eea');
+            pad.setThickness(2);
+            
+            const testResults = results.join('\n');
+            signaturePadDocs.showOutput('npm-signature-container', '🧪 NPM Feature Test Results', testResults);
+        }
+
+        console.log('📦 Installation Guide Ready!');
+        console.log('🧪 Try the verification demos above to test your setup');
+    </script>
+</body>
+</html>
