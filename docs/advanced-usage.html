@@ -4,418 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced Usage - SignaturePad.js</title>
+    <meta name="description" content="Master the powerful features of SignaturePad.js with professional-grade examples, event handling, custom configurations, and enterprise-level integrations.">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🖋️</text></svg>">
+    
+    <!-- Shared Styles -->
     <link rel="stylesheet" href="shared.css">
-    <style>
-        .advanced-section {
-            margin: 3rem 0;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .advanced-header {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: white;
-            padding: 2rem;
-            margin: 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .advanced-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>') repeat;
-            background-size: 20px 20px;
-        }
-
-        .advanced-header h2 {
-            margin: 0;
-            font-size: 1.8rem;
-            font-weight: 700;
-            position: relative;
-            z-index: 1;
-        }
-
-        .advanced-header p {
-            margin: 0.5rem 0 0 0;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
-            font-size: 1.1rem;
-        }
-
-        .advanced-content {
-            padding: 2.5rem;
-            background: var(--background-color);
-        }
-
-        .feature-showcase {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        .showcase-item {
-            background: var(--background-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .showcase-item:hover {
-            border-color: var(--primary-color);
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
-        }
-
-        .showcase-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 1.5rem;
-            font-weight: 600;
-            font-size: 1.2rem;
-        }
-
-        .showcase-body {
-            padding: 2rem;
-        }
-
-        .code-tabs {
-            display: flex;
-            border-bottom: 2px solid var(--border-color);
-            margin-bottom: 1rem;
-            background: var(--background-secondary);
-            border-radius: 8px 8px 0 0;
-            overflow: hidden;
-        }
-
-        .code-tab {
-            padding: 0.75rem 1.5rem;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-family: 'Monaco', 'Consolas', monospace;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            transition: all 0.2s ease;
-        }
-
-        .code-tab.active {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .code-tab:hover:not(.active) {
-            background: var(--border-color);
-        }
-
-        .code-panel {
-            display: none;
-            background: var(--background-color);
-            border: 1px solid var(--border-color);
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            padding: 1.5rem;
-        }
-
-        .code-panel.active {
-            display: block;
-        }
-
-        .code-panel pre {
-            margin: 0;
-            font-family: 'Monaco', 'Consolas', monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            overflow-x: auto;
-        }
-
-        .settings-panel {
-            background: var(--background-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 1rem 0;
-        }
-
-        .settings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .setting-item {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .setting-label {
-            font-weight: 600;
-            color: var(--text-color);
-            font-size: 0.9rem;
-        }
-
-        .setting-input {
-            padding: 0.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-
-        .setting-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
-        }
-
-        .color-input {
-            height: 40px;
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-        }
-
-        .event-log {
-            background: #000;
-            color: #0f0;
-            font-family: 'Monaco', 'Consolas', monospace;
-            font-size: 0.8rem;
-            padding: 1rem;
-            border-radius: 6px;
-            height: 120px;
-            overflow-y: auto;
-            margin: 1rem 0;
-            border: 1px solid #333;
-        }
-
-        .event-log::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .event-log::-webkit-scrollbar-track {
-            background: #333;
-        }
-
-        .event-log::-webkit-scrollbar-thumb {
-            background: #555;
-            border-radius: 4px;
-        }
-
-        .pro-tip {
-            background: linear-gradient(135deg, #fef3c7, #f3e8ff);
-            border-left: 4px solid #f59e0b;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            border-radius: 0 8px 8px 0;
-            position: relative;
-        }
-
-        .pro-tip::before {
-            content: "💡";
-            position: absolute;
-            top: 1rem;
-            left: -2px;
-            background: #f59e0b;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .pro-tip-title {
-            font-weight: 700;
-            color: #92400e;
-            margin-bottom: 0.5rem;
-            margin-left: 2rem;
-            font-size: 1.1rem;
-        }
-
-        .pro-tip p {
-            margin-left: 2rem;
-            margin-bottom: 0;
-            color: #78350f;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 1rem;
-            background: var(--background-secondary);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 0.25rem;
-        }
-
-        .export-formats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .format-btn {
-            padding: 0.75rem;
-            border: 2px solid var(--border-color);
-            background: var(--background-secondary);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .format-btn:hover {
-            border-color: var(--primary-color);
-            background: var(--primary-color);
-            color: white;
-        }
-
-        @media (max-width: 768px) {
-            .feature-showcase {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .settings-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .export-formats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
 </head>
 <body>
-    <nav class="nav">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <span class="logo-icon">✍️</span>
-                <span class="logo-text">SignaturePad.js</span>
-            </div>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav fade-in">
+            <a href="./" class="nav-logo">🖋️ Signature Pad JS</a>
             <div class="nav-links">
-                <a href="index.html" class="nav-link">Home</a>
+                <a href="./" class="nav-link">Home</a>
                 <a href="installation.html" class="nav-link">Installation</a>
                 <a href="basic-usage.html" class="nav-link">Basic Usage</a>
                 <a href="advanced-usage.html" class="nav-link active">Advanced</a>
                 <a href="demo.html" class="nav-link">Demo</a>
+                <a href="https://github.com/niel-blanca/signature-pad-js" class="nav-link">GitHub</a>
+                <a href="https://www.npmjs.com/package/@niel-blanca/signature-pad" class="nav-link">NPM</a>
+            </div>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="section fade-in">
+            <div class="section-header">
+                <h1 class="section-title">⚡ Advanced Usage Guide</h1>
+                <p class="section-subtitle">Master the powerful features of SignaturePad.js with professional-grade examples, event handling, custom configurations, and enterprise-level integrations.</p>
             </div>
         </div>
-    </nav>
 
-    <main class="main">
-        <div class="container">
-            <!-- Page Header -->
-            <div class="page-header">
-                <h1 class="page-title">Advanced Usage Guide</h1>
-                <p class="page-subtitle">
-                    Master the powerful features of SignaturePad.js with professional-grade examples, 
-                    event handling, custom configurations, and enterprise-level integrations.
-                </p>
-            </div>
-
-            <!-- Real-time Configuration Section -->
-            <section class="advanced-section">
-                <div class="advanced-header">
-                    <h2>🎛️ Real-time Configuration</h2>
-                    <p>Dynamically adjust signature pad settings and see changes instantly</p>
+        <!-- Real-time Configuration Section -->
+        <div class="card fade-in">
+            <div class="card-header">
+                <span class="card-icon">⚙️</span>
+                <div>
+                    <h2 class="card-title">Real-time Configuration</h2>
+                    <p class="card-subtitle">Dynamically adjust signature pad settings and see changes instantly</p>
                 </div>
-                <div class="advanced-content">
-                    <div class="feature-showcase">
-                        <div class="showcase-item">
-                            <div class="showcase-header">Live Configuration Panel</div>
-                            <div class="showcase-body">
-                                <div class="settings-panel">
-                                    <h4 style="margin-top: 0;">Adjust Settings</h4>
-                                    <div class="settings-grid">
-                                        <div class="setting-item">
-                                            <label class="setting-label">Background Color</label>
-                                            <input type="color" class="color-input" id="bg-color" value="#ffffff">
-                                        </div>
-                                        <div class="setting-item">
-                                            <label class="setting-label">Pen Color</label>
-                                            <input type="color" class="color-input" id="pen-color" value="#000000">
-                                        </div>
-                                        <div class="setting-item">
-                                            <label class="setting-label">Min Width</label>
-                                            <input type="range" class="setting-input" id="min-width" min="0.1" max="5" step="0.1" value="0.5">
-                                            <span id="min-width-value">0.5</span>
-                                        </div>
-                                        <div class="setting-item">
-                                            <label class="setting-label">Max Width</label>
-                                            <input type="range" class="setting-input" id="max-width" min="1" max="10" step="0.1" value="2.5">
-                                            <span id="max-width-value">2.5</span>
-                                        </div>
-                                        <div class="setting-item">
-                                            <label class="setting-label">Velocity Filter</label>
-                                            <input type="range" class="setting-input" id="velocity" min="0" max="1" step="0.1" value="0.7">
-                                            <span id="velocity-value">0.7</span>
-                                        </div>
-                                        <div class="setting-item">
-                                            <label class="setting-label">Throttle (ms)</label>
-                                            <input type="range" class="setting-input" id="throttle" min="0" max="50" step="1" value="16">
-                                            <span id="throttle-value">16</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="signature-container large">
-                                    <canvas id="config-pad" class="signature-canvas"></canvas>
-                                    <div class="signature-status" id="config-status">Adjust settings above and draw to see changes</div>
-                                </div>
-                                
-                                <div class="controls">
-                                    <button class="btn btn-secondary" onclick="signatureDocs.clearPad('config-pad')">Clear</button>
-                                    <button class="btn btn-primary" onclick="resetToDefaults()">Reset to Defaults</button>
-                                </div>
-                            </div>
+            </div>
+            <div class="card-content">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start;">
+                    <!-- Live Configuration Panel -->
+                    <div class="controls">
+                        <h3 style="margin-bottom: 20px; color: var(--text-color);">Live Configuration Panel</h3>
+                        
+                        <div class="control-group">
+                            <label>Background Color</label>
+                            <input type="color" value="#ffffff" class="color-picker" id="bg-color"
+                                   onchange="updateConfig('backgroundColor', this.value)">
                         </div>
-
-                        <div class="showcase-item">
-                            <div class="showcase-header">Configuration Code</div>
-                            <div class="showcase-body">
-                                <div class="code-tabs">
-                                    <button class="code-tab active" onclick="switchTab(event, 'config-js')">JavaScript</button>
-                                    <button class="code-tab" onclick="switchTab(event, 'config-html')">HTML</button>
-                                </div>
-                                
-                                <div id="config-js" class="code-panel active">
-                                    <pre><code id="current-config">// Current configuration will appear here
+                        
+                        <div class="control-group">
+                            <label>Pen Color</label>
+                            <input type="color" value="#000000" class="color-picker" id="pen-color"
+                                   onchange="updateConfig('penColor', this.value)">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>Min Width: <span id="min-width-display">0.5</span></label>
+                            <input type="range" min="0.1" max="3" step="0.1" value="0.5" class="thickness-slider"
+                                   oninput="updateConfig('minWidth', this.value); document.getElementById('min-width-display').textContent = this.value">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>Max Width: <span id="max-width-display">2.5</span></label>
+                            <input type="range" min="1" max="8" step="0.1" value="2.5" class="thickness-slider"
+                                   oninput="updateConfig('maxWidth', this.value); document.getElementById('max-width-display').textContent = this.value">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>Velocity Filter: <span id="velocity-display">0.7</span></label>
+                            <input type="range" min="0" max="1" step="0.1" value="0.7" class="thickness-slider"
+                                   oninput="updateConfig('velocityFilterWeight', this.value); document.getElementById('velocity-display').textContent = this.value">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>Throttle (ms): <span id="throttle-display">16</span></label>
+                            <input type="range" min="1" max="50" step="1" value="16" class="thickness-slider"
+                                   oninput="updateConfig('throttle', this.value); document.getElementById('throttle-display').textContent = this.value">
+                        </div>
+                    </div>
+                    
+                    <!-- Configuration Code Display -->
+                    <div>
+                        <h3 style="margin-bottom: 20px; color: var(--text-color);">Configuration Code</h3>
+                        <div class="code-block" data-lang="JavaScript" id="config-code">
+// Current configuration will appear here
 const signaturePad = new SignaturePad(canvas, {
     backgroundColor: '#ffffff',
     penColor: '#000000',
@@ -423,774 +100,457 @@ const signaturePad = new SignaturePad(canvas, {
     maxWidth: 2.5,
     velocityFilterWeight: 0.7,
     throttle: 16
-});</code></pre>
-                                </div>
-                                
-                                <div id="config-html" class="code-panel">
-                                    <pre><code>&lt;canvas id="signature-pad" width="500" height="300"&gt;&lt;/canvas&gt;
-
-&lt;!-- Color controls --&gt;
-&lt;input type="color" id="pen-color" value="#000000"&gt;
-&lt;input type="color" id="bg-color" value="#ffffff"&gt;
-
-&lt;!-- Range controls --&gt;
-&lt;input type="range" id="min-width" min="0.1" max="5" step="0.1"&gt;
-&lt;input type="range" id="max-width" min="1" max="10" step="0.1"&gt;</code></pre>
-                                </div>
-                            </div>
+});
                         </div>
                     </div>
                 </div>
-            </section>
-
-            <!-- Event Handling Section -->
-            <section class="advanced-section">
-                <div class="advanced-header">
-                    <h2>⚡ Event Handling & Monitoring</h2>
-                    <p>Listen to signature pad events for advanced integrations and user analytics</p>
-                </div>
-                <div class="advanced-content">
-                    <div class="feature-showcase">
-                        <div class="showcase-item">
-                            <div class="showcase-header">Event Monitor</div>
-                            <div class="showcase-body">
-                                <div class="signature-container medium">
-                                    <canvas id="events-pad" class="signature-canvas"></canvas>
-                                    <div class="signature-status" id="events-status">Draw to see real-time events</div>
-                                </div>
-                                
-                                <div class="stats-grid">
-                                    <div class="stat-item">
-                                        <span class="stat-value" id="stroke-count">0</span>
-                                        <span class="stat-label">Strokes</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-value" id="point-count">0</span>
-                                        <span class="stat-label">Points</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-value" id="avg-velocity">0</span>
-                                        <span class="stat-label">Avg Velocity</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-value" id="duration">0s</span>
-                                        <span class="stat-label">Duration</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="event-log" id="event-log">
-                                    Welcome to Event Monitor - Draw on the canvas above to see events...
-                                </div>
-                                
-                                <div class="controls">
-                                    <button class="btn btn-secondary" onclick="clearEventLog()">Clear Log</button>
-                                    <button class="btn btn-secondary" onclick="signatureDocs.clearPad('events-pad'); resetStats()">Clear Canvas</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="showcase-item">
-                            <div class="showcase-header">Event Implementation</div>
-                            <div class="showcase-body">
-                                <div class="code-tabs">
-                                    <button class="code-tab active" onclick="switchTab(event, 'events-js')">JavaScript</button>
-                                    <button class="code-tab" onclick="switchTab(event, 'events-analytics')">Analytics</button>
-                                </div>
-                                
-                                <div id="events-js" class="code-panel active">
-                                    <pre><code>// Event listeners for signature pad
-signaturePad.on('beginStroke', (event) =&gt; {
-    console.log('Stroke started', event);
-    strokeCount++;
-    strokeStartTime = Date.now();
-});
-
-signaturePad.on('endStroke', (event) =&gt; {
-    console.log('Stroke ended', event);
-    const duration = Date.now() - strokeStartTime;
-    console.log(`Stroke duration: ${duration}ms`);
-});
-
-signaturePad.on('beforeUpdateStroke', (event) =&gt; {
-    pointCount++;
-    // Calculate velocity, pressure, etc.
-});
-
-// Custom event handling
-canvas.addEventListener('mouseenter', () =&gt; {
-    console.log('Mouse entered canvas');
-});
-
-canvas.addEventListener('mouseleave', () =&gt; {
-    console.log('Mouse left canvas');
-});</code></pre>
-                                </div>
-                                
-                                <div id="events-analytics" class="code-panel">
-                                    <pre><code>// Analytics tracking
-function trackSignatureMetrics(signaturePad) {
-    let metrics = {
-        strokes: 0,
-        totalPoints: 0,
-        averageVelocity: 0,
-        sessionDuration: 0,
-        startTime: Date.now()
-    };
-    
-    signaturePad.on('beginStroke', () =&gt; {
-        metrics.strokes++;
-        updateAnalytics(metrics);
-    });
-    
-    signaturePad.on('endStroke', (event) =&gt; {
-        metrics.totalPoints += event.points?.length || 0;
-        metrics.sessionDuration = Date.now() - metrics.startTime;
-        
-        // Send to analytics service
-        sendToAnalytics(metrics);
-    });
-}</code></pre>
-                                </div>
-                            </div>
+                
+                <!-- Live Demo -->
+                <div class="demo-section" style="margin-top: 30px;">
+                    <h3 class="demo-title">🔧 Live Demo: Real-time Configuration</h3>
+                    <div id="config-pad" class="signature-container large">
+                        <div class="signature-placeholder">
+                            Draw here to test your configuration
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <!-- Data Export & Import Section -->
-            <section class="advanced-section">
-                <div class="advanced-header">
-                    <h2>💾 Advanced Data Handling</h2>
-                    <p>Export signatures in multiple formats and implement robust data persistence</p>
-                </div>
-                <div class="advanced-content">
-                    <div class="feature-showcase">
-                        <div class="showcase-item">
-                            <div class="showcase-header">Export Formats</div>
-                            <div class="showcase-body">
-                                <div class="signature-container medium">
-                                    <canvas id="export-pad" class="signature-canvas"></canvas>
-                                    <div class="signature-status" id="export-status">Create a signature to test exports</div>
-                                </div>
-                                
-                                <div class="export-formats">
-                                    <button class="format-btn" onclick="exportAs('png')">
-                                        📷 PNG Image
-                                    </button>
-                                    <button class="format-btn" onclick="exportAs('svg')">
-                                        🎨 SVG Vector
-                                    </button>
-                                    <button class="format-btn" onclick="exportAs('json')">
-                                        📋 JSON Data
-                                    </button>
-                                    <button class="format-btn" onclick="exportAs('base64')">
-                                        🔤 Base64
-                                    </button>
-                                </div>
-                                
-                                <div id="export-preview" style="min-height: 100px; background: var(--background-secondary); border: 1px dashed var(--border-color); border-radius: 6px; padding: 1rem; margin: 1rem 0; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
-                                    Export data will appear here...
-                                </div>
-                                
-                                <div class="controls">
-                                    <button class="btn btn-secondary" onclick="signatureDocs.clearPad('export-pad')">Clear Canvas</button>
-                                    <button class="btn btn-primary" onclick="loadSampleSignature()">Load Sample</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="showcase-item">
-                            <div class="showcase-header">Export Implementation</div>
-                            <div class="showcase-body">
-                                <div class="code-tabs">
-                                    <button class="code-tab active" onclick="switchTab(event, 'export-js')">Export Code</button>
-                                    <button class="code-tab" onclick="switchTab(event, 'import-js')">Import Code</button>
-                                </div>
-                                
-                                <div id="export-js" class="code-panel active">
-                                    <pre><code>// PNG Export with custom options
-const pngData = signaturePad.toDataURL('image/png');
-
-// SVG Export (vector format)
-const svgData = signaturePad.toSVG();
-
-// JSON Export (full signature data)
-const jsonData = JSON.stringify({
-    signature: signaturePad.toData(),
-    metadata: {
-        timestamp: new Date().toISOString(),
-        version: '1.0.0',
-        device: navigator.userAgent
-    }
-});
-
-// Base64 with custom background
-const base64 = signaturePad.toDataURL('image/png', {
-    backgroundColor: 'white'
-});
-
-// Download as file
-function downloadSignature(dataUrl, filename) {
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = dataUrl;
-    link.click();
-}</code></pre>
-                                </div>
-                                
-                                <div id="import-js" class="code-panel">
-                                    <pre><code>// Import from Data URL
-signaturePad.fromDataURL(dataUrl);
-
-// Import from JSON data
-const signatureData = JSON.parse(jsonString);
-signaturePad.fromData(signatureData.signature);
-
-// Batch import multiple signatures
-function importSignatures(signaturesArray) {
-    signaturesArray.forEach((sig, index) =&gt; {
-        setTimeout(() =&gt; {
-            signaturePad.clear();
-            signaturePad.fromData(sig.data);
-            console.log(`Loaded signature ${index + 1}`);
-        }, index * 1000);
-    });
-}
-
-// Import with validation
-function safeImport(data) {
-    try {
-        if (typeof data === 'string' && data.startsWith('data:')) {
-            signaturePad.fromDataURL(data);
-        } else if (Array.isArray(data)) {
-            signaturePad.fromData(data);
-        } else {
-            throw new Error('Invalid signature data format');
-        }
-    } catch (error) {
-        console.error('Import failed:', error);
-    }
-}</code></pre>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Professional Integration Section -->
-            <section class="advanced-section">
-                <div class="advanced-header">
-                    <h2>🏢 Professional Integration</h2>
-                    <p>Enterprise-ready patterns for forms, validation, and database integration</p>
-                </div>
-                <div class="advanced-content">
-                    <div class="feature-showcase">
-                        <div class="showcase-item">
-                            <div class="showcase-header">Document Signing Workflow</div>
-                            <div class="showcase-body">
-                                <div style="background: var(--background-secondary); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
-                                    <h4 style="margin-top: 0;">Legal Document</h4>
-                                    <p style="margin-bottom: 1rem;">I hereby agree to the terms and conditions outlined in this document...</p>
-                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                                        <div>
-                                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name:</label>
-                                            <input type="text" id="signer-name" placeholder="Enter your full name" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px;">
-                                        </div>
-                                        <div>
-                                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Date:</label>
-                                            <input type="date" id="sign-date" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px;">
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="signature-container medium">
-                                    <canvas id="document-pad" class="signature-canvas"></canvas>
-                                    <div class="signature-status" id="document-status">Please sign above to complete the document</div>
-                                </div>
-                                
-                                <div class="controls">
-                                    <button class="btn btn-secondary" onclick="signatureDocs.clearPad('document-pad')">Clear</button>
-                                    <button class="btn btn-primary" onclick="processDocument()">Process Document</button>
-                                </div>
-                                
-                                <div id="document-result" style="display: none; margin-top: 1rem; padding: 1rem; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 6px; color: #155724;">
-                                    <h4>Document Processed Successfully!</h4>
-                                    <p>Document ID: <span id="doc-id"></span></p>
-                                    <p>Signature verified and stored securely.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="showcase-item">
-                            <div class="showcase-header">Integration Code</div>
-                            <div class="showcase-body">
-                                <div class="code-tabs">
-                                    <button class="code-tab active" onclick="switchTab(event, 'workflow-js')">Workflow</button>
-                                    <button class="code-tab" onclick="switchTab(event, 'validation-js')">Validation</button>
-                                    <button class="code-tab" onclick="switchTab(event, 'api-js')">API Integration</button>
-                                </div>
-                                
-                                <div id="workflow-js" class="code-panel active">
-                                    <pre><code>// Document signing workflow
-class DocumentSigner {
-    constructor(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.signaturePad = new SignaturePad(this.canvas);
-        this.setupEventListeners();
-    }
-    
-    setupEventListeners() {
-        this.signaturePad.on('endStroke', () =&gt; {
-            this.validateSignature();
-        });
-    }
-    
-    validateSignature() {
-        if (!this.signaturePad.isEmpty()) {
-            this.enableSubmitButton();
-        }
-    }
-    
-    async processDocument() {
-        const documentData = {
-            signerName: document.getElementById('signer-name').value,
-            signDate: document.getElementById('sign-date').value,
-            signature: this.signaturePad.toDataURL(),
-            documentHash: this.generateDocumentHash(),
-            timestamp: new Date().toISOString()
-        };
-        
-        return await this.submitToServer(documentData);
-    }
-}</code></pre>
-                                </div>
-                                
-                                <div id="validation-js" class="code-panel">
-                                    <pre><code>// Signature validation system
-class SignatureValidator {
-    static validate(signaturePad, options = {}) {
-        const errors = [];
-        
-        // Check if signature exists
-        if (signaturePad.isEmpty()) {
-            errors.push('Signature is required');
-        }
-        
-        // Check signature complexity
-        const data = signaturePad.toData();
-        const totalPoints = data.reduce((sum, stroke) =&gt; 
-            sum + stroke.points.length, 0);
-            
-        if (totalPoints &lt; options.minPoints || 10) {
-            errors.push('Signature too simple');
-        }
-        
-        // Check signature bounds
-        const bounds = this.getSignatureBounds(data);
-        if (bounds.width &lt; options.minWidth || 50) {
-            errors.push('Signature too narrow');
-        }
-        
-        return {
-            isValid: errors.length === 0,
-            errors: errors
-        };
-    }
-    
-    static getSignatureBounds(data) {
-        let minX = Infinity, maxX = -Infinity;
-        let minY = Infinity, maxY = -Infinity;
-        
-        data.forEach(stroke =&gt; {
-            stroke.points.forEach(point =&gt; {
-                minX = Math.min(minX, point.x);
-                maxX = Math.max(maxX, point.x);
-                minY = Math.min(minY, point.y);
-                maxY = Math.max(maxY, point.y);
-            });
-        });
-        
-        return {
-            width: maxX - minX,
-            height: maxY - minY,
-            x: minX,
-            y: minY
-        };
-    }
-}</code></pre>
-                                </div>
-                                
-                                <div id="api-js" class="code-panel">
-                                    <pre><code>// API integration for signature storage
-class SignatureAPI {
-    constructor(baseUrl, apiKey) {
-        this.baseUrl = baseUrl;
-        this.apiKey = apiKey;
-    }
-    
-    async saveSignature(signatureData) {
-        const response = await fetch(`${this.baseUrl}/signatures`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.apiKey}`
-            },
-            body: JSON.stringify({
-                signature: signatureData.dataUrl,
-                metadata: {
-                    timestamp: new Date().toISOString(),
-                    userAgent: navigator.userAgent,
-                    dimensions: signatureData.dimensions
-                }
-            })
-        });
-        
-        if (!response.ok) {
-            throw new Error(`Failed to save signature: ${response.status}`);
-        }
-        
-        return await response.json();
-    }
-    
-    async getSignature(signatureId) {
-        const response = await fetch(`${this.baseUrl}/signatures/${signatureId}`, {
-            headers: {
-                'Authorization': `Bearer ${this.apiKey}`
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error(`Failed to get signature: ${response.status}`);
-        }
-        
-        return await response.json();
-    }
-    
-    async verifySignature(signatureId, documentHash) {
-        const response = await fetch(`${this.baseUrl}/signatures/${signatureId}/verify`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.apiKey}`
-            },
-            body: JSON.stringify({ documentHash })
-        });
-        
-        return await response.json();
-    }
-}</code></pre>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="pro-tip">
-                        <div class="pro-tip-title">Enterprise Security Best Practices</div>
-                        <p>Always implement server-side validation, use HTTPS for transmission, store signatures with cryptographic hashes, implement audit trails, and consider adding biometric verification for high-security applications.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Next Steps -->
-            <div class="nav-section">
-                <div class="nav-card">
-                    <div class="nav-card-content">
-                        <h3>🎮 Ready to Explore?</h3>
-                        <p>You've mastered advanced SignaturePad.js features! Ready to try everything in our comprehensive interactive demo?</p>
-                        <a href="demo.html" class="btn btn-primary">Full Interactive Demo</a>
+                    <div class="controls">
+                        <button class="btn btn-secondary" onclick="signaturePads.config.clear()">Clear</button>
+                        <div class="status-indicator status-empty" id="config-status">Canvas is empty</div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 SignaturePad.js - Professional digital signature solutions</p>
+        <!-- Event Handling Section -->
+        <div class="card fade-in">
+            <div class="card-header">
+                <span class="card-icon">🔔</span>
+                <div>
+                    <h2 class="card-title">Event Handling & Callbacks</h2>
+                    <p class="card-subtitle">React to user interactions with powerful event callbacks</p>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="code-block" data-lang="JavaScript">
+const signaturePad = new SignaturePad(canvas, {
+    onBegin: function(event) {
+        console.log('Signature started', event);
+        // Track when user starts signing
+        updateStatus('Drawing started...');
+    },
+    
+    onEnd: function(event) {
+        console.log('Signature ended', event);
+        // Validate, save, or process signature
+        if (!signaturePad.isEmpty()) {
+            autoSave();
+        }
+    }
+});
+
+// Additional event listeners
+signaturePad.addEventListener('beginStroke', function(event) {
+    // Custom logic for stroke beginning
+});
+
+signaturePad.addEventListener('endStroke', function(event) {
+    // Custom logic for stroke ending
+});
+                </div>
+
+                <div class="demo-section">
+                    <h3 class="demo-title">🔔 Live Demo: Event Callbacks</h3>
+                    <div id="events-pad" class="signature-container medium">
+                        <div class="signature-placeholder">
+                            Start drawing to see events in action
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <button class="btn btn-secondary" onclick="signaturePads.events.clear()">Clear</button>
+                        <div class="status-indicator status-empty" id="events-status">Canvas is empty</div>
+                    </div>
+                    <div class="output-section">
+                        <h4 style="margin-bottom: 15px;">Event Log:</h4>
+                        <div class="output-content" id="event-log">
+No events yet. Start drawing to see events appear here.
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </footer>
 
-    <script src="shared.js"></script>
-    <script>
-        // Global variables for event tracking
-        let strokeCount = 0;
-        let pointCount = 0;
-        let velocities = [];
-        let sessionStart = Date.now();
-        let strokeStartTime = 0;
+        <!-- Data Export & Import Section -->
+        <div class="card fade-in">
+            <div class="card-header">
+                <span class="card-icon">💾</span>
+                <div>
+                    <h2 class="card-title">Data Export & Import</h2>
+                    <p class="card-subtitle">Save and load signatures in multiple formats</p>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="code-block" data-lang="JavaScript">
+// Export as Data URL (Base64)
+const pngData = signaturePad.toDataURL(); // PNG by default
+const jpegData = signaturePad.toDataURL('image/jpeg', 0.8); // JPEG with quality
 
-        // Initialize all signature pads
-        document.addEventListener('DOMContentLoaded', async () => {
-            await signatureDocs.init();
-            
-            // Configuration pad
-            signatureDocs.createSignaturePad('config-pad', {
-                backgroundColor: '#ffffff',
-                penColor: '#000000',
-                minWidth: 0.5,
-                maxWidth: 2.5,
-                velocityFilterWeight: 0.7,
-                throttle: 16
-            });
-            
-            // Events monitoring pad
-            const eventsPad = signatureDocs.createSignaturePad('events-pad', {
-                backgroundColor: 'rgb(255, 255, 255)',
-                penColor: 'rgb(0, 0, 0)'
-            });
-            
-            // Setup event monitoring
-            setupEventMonitoring(eventsPad);
-            
-            // Export demo pad
-            signatureDocs.createSignaturePad('export-pad', {
-                backgroundColor: 'rgb(255, 255, 255)',
-                penColor: 'rgb(0, 0, 0)'
-            });
-            
-            // Document signing pad
-            signatureDocs.createSignaturePad('document-pad', {
-                backgroundColor: 'rgb(255, 255, 255)',
-                penColor: 'rgb(0, 0, 0)'
-            });
-            
-            // Setup configuration controls
-            setupConfigurationControls();
-            
-            // Set default date
-            document.getElementById('sign-date').value = new Date().toISOString().split('T')[0];
+// Export as SVG
+const svgData = signaturePad.toSVG();
+
+// Export point data (for reconstruction)
+const pointData = signaturePad.toData();
+
+// Import from data URL
+signaturePad.fromDataURL(pngData);
+
+// Import from point data
+signaturePad.fromData(pointData);
+
+// Clear before importing
+signaturePad.clear();
+signaturePad.fromDataURL(savedSignature);
+                </div>
+
+                <div class="demo-section">
+                    <h3 class="demo-title">💾 Live Demo: Export & Import</h3>
+                    <div id="export-pad" class="signature-container medium">
+                        <div class="signature-placeholder">
+                            Draw a signature to test export/import
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <button class="btn btn-primary" onclick="exportSignature('png')">Export PNG</button>
+                        <button class="btn btn-primary" onclick="exportSignature('jpeg')">Export JPEG</button>
+                        <button class="btn btn-primary" onclick="exportSignature('svg')">Export SVG</button>
+                        <button class="btn btn-info" onclick="saveSignature()">Save to Memory</button>
+                        <button class="btn btn-success" onclick="loadSignature()">Load from Memory</button>
+                        <button class="btn btn-secondary" onclick="signaturePads.export.clear()">Clear</button>
+                        <div class="status-indicator status-empty" id="export-status">Canvas is empty</div>
+                    </div>
+                    <div class="output-section">
+                        <h4 style="margin-bottom: 15px;">Export Output:</h4>
+                        <div class="output-content" id="export-output">
+No data exported yet. Click an export button to see the output.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Optimization Section -->
+        <div class="card fade-in">
+            <div class="card-header">
+                <span class="card-icon">⚡</span>
+                <div>
+                    <h2 class="card-title">Performance Optimization</h2>
+                    <p class="card-subtitle">Optimize for high-performance applications and large canvases</p>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="code-block" data-lang="JavaScript">
+// High-performance configuration
+const signaturePad = new SignaturePad(canvas, {
+    throttle: 8,              // Lower throttle for smoother drawing
+    minPointDistance: 3,      // Reduce point density
+    velocityFilterWeight: 0.9, // Higher smoothing
+    
+    // Optimize for large canvases
+    dotSize: 0,               // Disable dots for single points
+    
+    // Custom drawing performance
+    onBegin: function() {
+        // Disable other UI updates during drawing
+        document.body.style.pointerEvents = 'none';
+        canvas.style.pointerEvents = 'auto';
+    },
+    
+    onEnd: function() {
+        // Re-enable UI
+        document.body.style.pointerEvents = 'auto';
+    }
+});
+
+// Manual cleanup for memory management
+function cleanup() {
+    signaturePad.off(); // Remove event listeners
+    // Additional cleanup logic
+}
+                </div>
+
+                <div class="demo-section">
+                    <h3 class="demo-title">⚡ Live Demo: Performance Optimized</h3>
+                    <div id="performance-pad" class="signature-container large">
+                        <div class="signature-placeholder">
+                            High-performance drawing canvas
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <button class="btn btn-secondary" onclick="signaturePads.performance.clear()">Clear</button>
+                        <div class="status-indicator status-empty" id="performance-status">Canvas is empty</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multiple Signature Pads Section -->
+        <div class="card fade-in">
+            <div class="card-header">
+                <span class="card-icon">📄</span>
+                <div>
+                    <h2 class="card-title">Multiple Signature Pads</h2>
+                    <p class="card-subtitle">Manage multiple signature pads on a single page</p>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="code-block" data-lang="JavaScript">
+// Create multiple signature pads with different configurations
+const pads = {};
+
+function initializeMultiplePads() {
+    const configs = [
+        { id: 'customer', color: '#3182ce', title: 'Customer Signature' },
+        { id: 'witness', color: '#e53e3e', title: 'Witness Signature' },
+        { id: 'agent', color: '#38a169', title: 'Agent Signature' }
+    ];
+    
+    configs.forEach(config => {
+        const canvas = document.getElementById(config.id + '-canvas');
+        pads[config.id] = new SignaturePad(canvas, {
+            penColor: config.color,
+            backgroundColor: '#ffffff'
         });
+    });
+}
 
-        // Configuration controls
-        function setupConfigurationControls() {
-            const controls = ['bg-color', 'pen-color', 'min-width', 'max-width', 'velocity', 'throttle'];
-            
-            controls.forEach(controlId => {
-                const control = document.getElementById(controlId);
-                if (control) {
-                    control.addEventListener('input', updateConfiguration);
+// Validate all signatures
+function validateAllSignatures() {
+    const results = {};
+    Object.keys(pads).forEach(key => {
+        results[key] = !pads[key].isEmpty();
+    });
+    return results;
+}
+                </div>
+
+                <div class="demo-section">
+                    <h3 class="demo-title">📄 Live Demo: Multiple Signature Pads</h3>
                     
-                    // Update value display for range inputs
-                    if (control.type === 'range') {
-                        const valueSpan = document.getElementById(controlId + '-value');
-                        if (valueSpan) {
-                            control.addEventListener('input', () => {
-                                valueSpan.textContent = control.value;
-                            });
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                        <div>
+                            <h4 style="color: var(--accent-color); margin-bottom: 10px;">👤 Customer Signature</h4>
+                            <div id="customer-pad" class="signature-container small">
+                                <div class="signature-placeholder">Customer signs here</div>
+                            </div>
+                            <div class="status-indicator status-empty" id="customer-status">Empty</div>
+                        </div>
+                        
+                        <div>
+                            <h4 style="color: var(--danger-color); margin-bottom: 10px;">👥 Witness Signature</h4>
+                            <div id="witness-pad" class="signature-container small">
+                                <div class="signature-placeholder">Witness signs here</div>
+                            </div>
+                            <div class="status-indicator status-empty" id="witness-status">Empty</div>
+                        </div>
+                        
+                        <div>
+                            <h4 style="color: var(--success-color); margin-bottom: 10px;">🏢 Agent Signature</h4>
+                            <div id="agent-pad" class="signature-container small">
+                                <div class="signature-placeholder">Agent signs here</div>
+                            </div>
+                            <div class="status-indicator status-empty" id="agent-status">Empty</div>
+                        </div>
+                    </div>
+                    
+                    <div class="controls" style="margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="validateAllPads()">Validate All</button>
+                        <button class="btn btn-secondary" onclick="clearAllPads()">Clear All</button>
+                        <button class="btn btn-success" onclick="exportAllPads()">Export All</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="section fade-in">
+            <div class="section-header">
+                <h2 class="section-title">🎯 Explore More</h2>
+                <p class="section-subtitle">Continue your SignaturePad.js journey</p>
+            </div>
+            <div class="section-content">
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <span class="feature-icon">📖</span>
+                        <h3>Basic Usage</h3>
+                        <p>Need to review the fundamentals? Go back to the basic usage guide.</p>
+                        <a href="basic-usage.html" class="btn btn-secondary mt-20">Basic Guide</a>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🎮</span>
+                        <h3>Interactive Demo</h3>
+                        <p>Test all features in our comprehensive interactive playground.</p>
+                        <a href="demo.html" class="btn btn-primary mt-20">Try Demo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load signature_pad library -->
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <!-- Load shared JavaScript -->
+    <script src="shared.js"></script>
+
+    <script>
+        let savedSignatureData = null;
+        let eventLogCount = 0;
+
+        // Initialize signature pads when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            signaturePads.init([
+                { id: 'config', config: { backgroundColor: '#ffffff', penColor: '#000000' } },
+                { 
+                    id: 'events', 
+                    config: {
+                        onBegin: function() {
+                            logEvent('Drawing started');
+                        },
+                        onEnd: function() {
+                            logEvent('Drawing ended');
                         }
                     }
-                }
-            });
-        }
+                },
+                { id: 'export', config: {} },
+                { id: 'performance', config: { throttle: 8, minPointDistance: 3, velocityFilterWeight: 0.9 } },
+                { id: 'customer', config: { penColor: '#3182ce' } },
+                { id: 'witness', config: { penColor: '#e53e3e' } },
+                { id: 'agent', config: { penColor: '#38a169' } }
+            ]);
+        });
 
-        function updateConfiguration() {
-            const config = {
-                backgroundColor: document.getElementById('bg-color').value,
-                penColor: document.getElementById('pen-color').value,
-                minWidth: parseFloat(document.getElementById('min-width').value),
-                maxWidth: parseFloat(document.getElementById('max-width').value),
-                velocityFilterWeight: parseFloat(document.getElementById('velocity').value),
-                throttle: parseInt(document.getElementById('throttle').value)
-            };
-            
-            // Recreate the pad with new configuration
-            signatureDocs.createSignaturePad('config-pad', config);
-            
-            // Update the code display
-            updateCodeDisplay(config);
-        }
-
-        function updateCodeDisplay(config) {
-            const codeElement = document.getElementById('current-config');
-            if (codeElement) {
-                codeElement.textContent = `// Current configuration
-const signaturePad = new SignaturePad(canvas, {
-    backgroundColor: '${config.backgroundColor}',
-    penColor: '${config.penColor}',
-    minWidth: ${config.minWidth},
-    maxWidth: ${config.maxWidth},
-    velocityFilterWeight: ${config.velocityFilterWeight},
-    throttle: ${config.throttle}
-});`;
+        // Configuration functions
+        function updateConfig(property, value) {
+            const pad = signaturePads.config;
+            if (pad) {
+                pad[property] = value;
+                updateConfigCode();
             }
         }
 
-        function resetToDefaults() {
-            document.getElementById('bg-color').value = '#ffffff';
-            document.getElementById('pen-color').value = '#000000';
-            document.getElementById('min-width').value = '0.5';
-            document.getElementById('max-width').value = '2.5';
-            document.getElementById('velocity').value = '0.7';
-            document.getElementById('throttle').value = '16';
+        function updateConfigCode() {
+            const bgColor = document.getElementById('bg-color').value;
+            const penColor = document.getElementById('pen-color').value;
+            const minWidth = document.querySelector('input[oninput*="minWidth"]').value;
+            const maxWidth = document.querySelector('input[oninput*="maxWidth"]').value;
+            const velocity = document.querySelector('input[oninput*="velocityFilterWeight"]').value;
+            const throttle = document.querySelector('input[oninput*="throttle"]').value;
+
+            const code = `// Current configuration will appear here
+const signaturePad = new SignaturePad(canvas, {
+    backgroundColor: '${bgColor}',
+    penColor: '${penColor}',
+    minWidth: ${minWidth},
+    maxWidth: ${maxWidth},
+    velocityFilterWeight: ${velocity},
+    throttle: ${throttle}
+});`;
             
-            // Update value displays
-            document.getElementById('min-width-value').textContent = '0.5';
-            document.getElementById('max-width-value').textContent = '2.5';
-            document.getElementById('velocity-value').textContent = '0.7';
-            document.getElementById('throttle-value').textContent = '16';
-            
-            updateConfiguration();
+            document.getElementById('config-code').textContent = code;
         }
 
-        // Event monitoring
-        function setupEventMonitoring(pad) {
-            pad.on('beginStroke', (event) => {
-                strokeCount++;
-                strokeStartTime = Date.now();
-                logEvent('beginStroke', 'Stroke started');
-                updateStats();
-            });
-            
-            pad.on('endStroke', (event) => {
-                const duration = Date.now() - strokeStartTime;
-                logEvent('endStroke', `Stroke ended (${duration}ms)`);
-                updateStats();
-            });
-            
-            pad.on('beforeUpdateStroke', (event) => {
-                pointCount++;
-                if (event.point) {
-                    // Calculate velocity (simplified)
-                    velocities.push(Math.random() * 10); // Mock velocity calculation
-                }
-                updateStats();
-            });
-        }
-
-        function logEvent(type, message) {
+        // Event logging
+        function logEvent(message) {
+            eventLogCount++;
             const log = document.getElementById('event-log');
             const timestamp = new Date().toLocaleTimeString();
-            log.innerHTML += `\n[${timestamp}] ${type}: ${message}`;
+            log.textContent += `[${timestamp}] ${eventLogCount}. ${message}\n`;
             log.scrollTop = log.scrollHeight;
         }
 
-        function updateStats() {
-            document.getElementById('stroke-count').textContent = strokeCount;
-            document.getElementById('point-count').textContent = pointCount;
-            
-            const avgVelocity = velocities.length > 0 ? 
-                (velocities.reduce((a, b) => a + b, 0) / velocities.length).toFixed(1) : 0;
-            document.getElementById('avg-velocity').textContent = avgVelocity;
-            
-            const duration = Math.floor((Date.now() - sessionStart) / 1000);
-            document.getElementById('duration').textContent = duration + 's';
-        }
-
-        function clearEventLog() {
-            document.getElementById('event-log').innerHTML = 'Event log cleared...';
-        }
-
-        function resetStats() {
-            strokeCount = 0;
-            pointCount = 0;
-            velocities = [];
-            sessionStart = Date.now();
-            updateStats();
-            clearEventLog();
-        }
-
-        // Export functionality
-        function exportAs(format) {
-            const pad = signatureDocs.pads['export-pad'];
-            if (!pad || pad.isEmpty()) {
-                document.getElementById('export-preview').innerHTML = '⚠️ Please create a signature first';
+        // Export functions
+        function exportSignature(format) {
+            const pad = signaturePads.export;
+            if (pad.isEmpty()) {
+                alert('Please draw a signature first!');
                 return;
             }
-            
-            const preview = document.getElementById('export-preview');
-            
+
+            let data;
             switch (format) {
                 case 'png':
-                    const pngData = pad.toDataURL('image/png');
-                    preview.innerHTML = `PNG Data URL (${pngData.length} characters):\n${pngData.substring(0, 200)}...`;
+                    data = pad.toDataURL();
                     break;
-                    
+                case 'jpeg':
+                    data = pad.toDataURL('image/jpeg', 0.8);
+                    break;
                 case 'svg':
-                    const svgData = pad.toSVG();
-                    preview.innerHTML = `SVG Data (${svgData.length} characters):\n${svgData.substring(0, 200)}...`;
-                    break;
-                    
-                case 'json':
-                    const jsonData = JSON.stringify(pad.toData(), null, 2);
-                    preview.innerHTML = `JSON Data (${jsonData.length} characters):\n${jsonData.substring(0, 300)}...`;
-                    break;
-                    
-                case 'base64':
-                    const base64Data = pad.toDataURL('image/png').split(',')[1];
-                    preview.innerHTML = `Base64 Data (${base64Data.length} characters):\n${base64Data.substring(0, 200)}...`;
+                    data = pad.toSVG();
                     break;
             }
+
+            document.getElementById('export-output').textContent = data.substring(0, 500) + '...';
+            
+            // Download the file
+            const link = document.createElement('a');
+            link.download = `signature.${format}`;
+            link.href = data;
+            link.click();
         }
 
-        function loadSampleSignature() {
-            const pad = signatureDocs.pads['export-pad'];
-            if (pad) {
-                // Create a simple sample signature programmatically
-                const sampleData = [
-                    {
-                        "points": [
-                            {"x": 100, "y": 150, "pressure": 0.5, "time": Date.now()},
-                            {"x": 150, "y": 120, "pressure": 0.7, "time": Date.now() + 50},
-                            {"x": 200, "y": 140, "pressure": 0.6, "time": Date.now() + 100},
-                            {"x": 250, "y": 110, "pressure": 0.8, "time": Date.now() + 150}
-                        ]
-                    }
-                ];
-                pad.fromData(sampleData);
-                document.getElementById('export-status').textContent = '✓ Sample signature loaded';
+        function saveSignature() {
+            const pad = signaturePads.export;
+            if (pad.isEmpty()) {
+                alert('Please draw a signature first!');
+                return;
             }
+            savedSignatureData = pad.toDataURL();
+            alert('Signature saved to memory!');
         }
 
-        // Document processing
-        function processDocument() {
-            const name = document.getElementById('signer-name').value;
-            const date = document.getElementById('sign-date').value;
-            const pad = signatureDocs.pads['document-pad'];
-            
-            if (!name.trim()) {
-                alert('Please enter your full name');
+        function loadSignature() {
+            if (!savedSignatureData) {
+                alert('No signature data saved! Please save a signature first.');
                 return;
             }
+            signaturePads.export.fromDataURL(savedSignatureData);
+            alert('Signature loaded from memory!');
+        }
+
+        // Multiple pads functions
+        function validateAllPads() {
+            const pads = ['customer', 'witness', 'agent'];
+            const results = pads.map(id => ({
+                id,
+                isEmpty: signaturePads[id].isEmpty()
+            }));
             
-            if (!date) {
-                alert('Please select a date');
-                return;
-            }
+            const message = results.map(r => 
+                `${r.id}: ${r.isEmpty ? 'Empty' : 'Signed'}`
+            ).join('\n');
             
-            if (!pad || pad.isEmpty()) {
-                alert('Please provide your signature');
-                return;
-            }
-            
-            // Generate mock document ID
-            const docId = 'DOC-' + Date.now().toString(36).toUpperCase();
-            
-            // Show success
-            document.getElementById('doc-id').textContent = docId;
-            document.getElementById('document-result').style.display = 'block';
-            document.getElementById('document-status').textContent = '✓ Document signed successfully';
-            
-            console.log('Document processed:', {
-                id: docId,
-                signer: name,
-                date: date,
-                signature: pad.toDataURL(),
-                timestamp: new Date().toISOString()
+            alert('Validation Results:\n' + message);
+        }
+
+        function clearAllPads() {
+            ['customer', 'witness', 'agent'].forEach(id => {
+                signaturePads[id].clear();
             });
         }
 
-        // Tab switching
-        function switchTab(event, tabId) {
-            const tabContainer = event.target.closest('.showcase-body');
-            const tabs = tabContainer.querySelectorAll('.code-tab');
-            const panels = tabContainer.querySelectorAll('.code-panel');
+        function exportAllPads() {
+            const results = {};
+            ['customer', 'witness', 'agent'].forEach(id => {
+                if (!signaturePads[id].isEmpty()) {
+                    results[id] = signaturePads[id].toDataURL();
+                }
+            });
             
-            tabs.forEach(tab => tab.classList.remove('active'));
-            panels.forEach(panel => panel.classList.remove('active'));
+            if (Object.keys(results).length === 0) {
+                alert('No signatures to export!');
+                return;
+            }
             
-            event.target.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
+            console.log('Exported signatures:', results);
+            alert(`Exported ${Object.keys(results).length} signature(s). Check browser console for data.`);
         }
     </script>
 </body>
