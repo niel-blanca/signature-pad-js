@@ -1,74 +1,109 @@
 // Shared JavaScript utilities for signature pad documentation
 class SignaturePadDocs {
     constructor() {
-        this.pads = new Map();
-        this.loadLibrary();
+        this.pads = {};
+        this.isLibraryLoaded = false;
+    }
+
+    async init() {
+        if (this.isLibraryLoaded) return;
+        await this.loadLibrary();
+        this.isLibraryLoaded = true;
     }
 
     async loadLibrary() {
         return new Promise((resolve, reject) => {
-            // Try to load from local dist first, then fallback to CDN
+            // Use the standard signature_pad library from CDN
             const script = document.createElement('script');
             script.onload = () => {
                 console.log('✅ SignaturePad library loaded successfully');
                 resolve();
             };
             script.onerror = () => {
-                console.log('⚠️ Local library failed, trying CDN...');
-                this.loadFromCDN().then(resolve).catch(reject);
-            };
-            script.src = '../dist/signature-pad.js';
-            document.head.appendChild(script);
-        });
-    }
-
-    async loadFromCDN() {
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.onload = () => {
-                console.log('✅ SignaturePad library loaded from CDN');
-                resolve();
-            };
-            script.onerror = () => {
-                console.error('❌ Failed to load SignaturePad library from CDN');
+                console.error('❌ Failed to load SignaturePad library');
                 reject(new Error('Failed to load SignaturePad library'));
             };
-            script.src = 'https://unpkg.com/@niel-blanca/signature-pad@latest/dist/signature-pad.min.js';
+            script.src = 'https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js';
             document.head.appendChild(script);
         });
     }
 
     createSignaturePad(containerId, options = {}) {
-        const container = document.getElementById(containerId);
-        if (!container) {
-            console.error(`Container with ID ${containerId} not found`);
+        let canvas = document.getElementById(containerId);
+        let container = null;
+        
+        // If we have a container div, create or find the canvas inside it
+        if (canvas && canvas.tagName !== 'CANVAS') {
+            container = canvas;
+            canvas = container.querySelector('canvas');
+            
+            // If no canvas exists in the container, create one
+            if (!canvas) {
+                canvas = document.createElement('canvas');
+                canvas.id = containerId + '-canvas';
+                canvas.className = 'signature-canvas';
+                
+                // Set canvas dimensions based on container size
+                const rect = container.getBoundingClientRect();
+                canvas.width = rect.width || 400;
+                canvas.height = rect.height || 200;
+                
+                // Clear any placeholder content
+                container.innerHTML = '';
+                container.appendChild(canvas);
+            }
+        }
+        
+        if (!canvas) {
+            console.error(`Canvas with ID ${containerId} not found`);
             return null;
         }
 
-        const placeholder = container.querySelector('.signature-placeholder');
+        // Ensure we have a canvas element
+        if (canvas.tagName !== 'CANVAS') {
+            console.error(`Element with ID ${containerId} is not a canvas`);
+            return null;
+        }
+
+        // Wait for SignaturePad to be available
+        if (typeof window.SignaturePad === 'undefined') {
+            console.error('SignaturePad library not loaded');
+            return null;
+        }
         
         const defaultOptions = {
-            background: '#ffffff',
-            color: '#000000',
-            thickness: 2,
-            guideline: false,
-            guidelineColor: '#e5e7eb',
-            onChange: (instance) => {
-                this.updateStatus(containerId, instance);
-                this.togglePlaceholder(placeholder, instance);
-            }
+            backgroundColor: options.backgroundColor || options.background || 'rgb(255, 255, 255)',
+            penColor: options.penColor || options.color || 'rgb(0, 0, 0)',
+            minWidth: options.minWidth || 0.5,
+            maxWidth: options.maxWidth || 2.5,
+            throttle: options.throttle || 16,
+            minDistance: options.minDistance || 5,
+            velocityFilterWeight: options.velocityFilterWeight || 0.7,
+            dotSize: options.dotSize || 1.0
         };
 
         const finalOptions = { ...defaultOptions, ...options };
 
         try {
-            const pad = new SignaturePad(container, finalOptions);
-            this.pads.set(containerId, pad);
+            const pad = new window.SignaturePad(canvas, finalOptions);
+            this.pads[containerId] = pad;
+            
+            // Set up event handlers if available
+            if (pad.on) {
+                pad.on('beginStroke', () => {
+                    this.updateStatus(containerId, pad);
+                    if (container) container.classList.add('has-content');
+                });
+                
+                pad.on('endStroke', () => {
+                    this.updateStatus(containerId, pad);
+                });
+            }
             
             // Initialize status
             this.updateStatus(containerId, pad);
             
-            console.log(`✅ Signature pad created for container: ${containerId}`);
+            console.log(`✅ Signature pad created for canvas: ${containerId}`);
             return pad;
         } catch (error) {
             console.error(`❌ Failed to create signature pad for ${containerId}:`, error);
@@ -77,216 +112,87 @@ class SignaturePadDocs {
         }
     }
 
-    updateStatus(containerId, instance) {
-        const statusElement = document.getElementById(`${containerId}-status`);
+    updateStatus(containerId, pad) {
+        const statusElement = document.getElementById(`${containerId.replace('-pad', '-status')}`);
         if (!statusElement) return;
 
-        if (instance.isEmpty()) {
-            statusElement.className = 'status-indicator status-empty';
-            statusElement.textContent = '📝 Signature pad is empty';
+        if (pad.isEmpty()) {
+            statusElement.textContent = 'Ready to sign';
         } else {
-            statusElement.className = 'status-indicator status-has-content';
-            statusElement.textContent = '✅ Signature captured successfully';
-        }
-    }
-
-    togglePlaceholder(placeholder, instance) {
-        if (!placeholder) return;
-        
-        const container = instance.container;
-        if (!instance.isEmpty()) {
-            placeholder.style.display = 'none';
-            container.classList.add('has-content');
-        } else {
-            placeholder.style.display = 'block';
-            container.classList.remove('has-content');
+            statusElement.textContent = '✓ Signature captured';
         }
     }
 
     showError(containerId, message) {
-        const statusElement = document.getElementById(`${containerId}-status`);
+        const statusElement = document.getElementById(`${containerId.replace('-pad', '-status')}`);
         if (statusElement) {
-            statusElement.className = 'status-indicator status-error';
             statusElement.textContent = `❌ ${message}`;
         }
     }
 
     // Control functions for demo pads
     clearPad(containerId) {
-        const pad = this.pads.get(containerId);
+        const pad = this.pads[containerId];
         if (pad) {
             pad.clear();
-            this.hideOutput(containerId);
+            this.updateStatus(containerId, pad);
+            
+            // Remove has-content class from container
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.classList.remove('has-content');
+            }
         }
     }
 
-    undoPad(containerId) {
-        const pad = this.pads.get(containerId);
-        if (pad && pad.undo) {
-            pad.undo();
+    exportPNG(containerId, filename = 'signature.png') {
+        const pad = this.pads[containerId];
+        if (pad && !pad.isEmpty()) {
+            const dataUrl = pad.toDataURL();
+            this.downloadFile(dataUrl, filename);
+        } else {
+            alert('Please create a signature first!');
         }
     }
 
-    redoPad(containerId) {
-        const pad = this.pads.get(containerId);
-        if (pad && pad.redo) {
-            pad.redo();
+    exportSVG(containerId, filename = 'signature.svg') {
+        const pad = this.pads[containerId];
+        if (pad && !pad.isEmpty() && pad.toSVG) {
+            const svgData = pad.toSVG();
+            const blob = new Blob([svgData], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            this.downloadFile(url, filename);
+        } else {
+            alert('Please create a signature first!');
         }
     }
 
-    toggleGuideline(containerId) {
-        const pad = this.pads.get(containerId);
-        if (pad && pad.toggleGuideline) {
-            pad.toggleGuideline();
+    exportJSON(containerId, filename = 'signature.json') {
+        const pad = this.pads[containerId];
+        if (pad && !pad.isEmpty() && pad.toData) {
+            const jsonData = JSON.stringify(pad.toData(), null, 2);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            this.downloadFile(url, filename);
+        } else {
+            alert('Please create a signature first!');
         }
-    }
-
-    setColor(containerId, color) {
-        const pad = this.pads.get(containerId);
-        if (pad) {
-            pad.setColor(color);
-        }
-    }
-
-    setThickness(containerId, thickness) {
-        const pad = this.pads.get(containerId);
-        if (pad) {
-            pad.setThickness(thickness);
-        }
-    }
-
-    // Export functions
-    exportToPNG(containerId, filename = 'signature.png') {
-        const pad = this.pads.get(containerId);
-        if (!pad) return;
-
-        if (pad.isEmpty()) {
-            alert('Please draw something first! ✏️');
-            return;
-        }
-        
-        const dataURL = pad.toDataURL('image/png');
-        this.showOutput(containerId, '🖼️ PNG Export', dataURL.substring(0, 100) + '...\n\n[Full data URL - click download to get complete file]');
-        this.downloadFile(dataURL, filename);
-    }
-
-    exportToSVG(containerId, filename = 'signature.svg') {
-        const pad = this.pads.get(containerId);
-        if (!pad) return;
-
-        if (pad.isEmpty()) {
-            alert('Please draw something first! ✏️');
-            return;
-        }
-        
-        const svgData = pad.toSVG();
-        this.showOutput(containerId, '⚡ SVG Export', svgData);
-        
-        const blob = new Blob([svgData], { type: 'image/svg+xml' });
-        const url = URL.createObjectURL(blob);
-        this.downloadFile(url, filename);
-    }
-
-    exportToJSON(containerId, filename = 'signature.json') {
-        const pad = this.pads.get(containerId);
-        if (!pad) return;
-
-        if (pad.isEmpty()) {
-            alert('Please draw something first! ✏️');
-            return;
-        }
-        
-        const jsonData = pad.toJSON();
-        this.showOutput(containerId, '📄 JSON Export', jsonData);
-        
-        const blob = new Blob([jsonData], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        this.downloadFile(url, filename);
     }
 
     downloadFile(url, filename) {
         const link = document.createElement('a');
         link.download = filename;
         link.href = url;
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
         
+        // Clean up blob URL if it was created
         if (url.startsWith('blob:')) {
-            URL.revokeObjectURL(url);
+            setTimeout(() => URL.revokeObjectURL(url), 100);
         }
-    }
-
-    showOutput(containerId, title, content) {
-        const section = document.getElementById(`${containerId}-output`);
-        if (!section) return;
-
-        const titleEl = section.querySelector('.output-title');
-        const contentEl = section.querySelector('.output-content');
-        
-        if (titleEl) titleEl.textContent = title;
-        if (contentEl) contentEl.textContent = content;
-        
-        section.style.display = 'block';
-        section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-
-    hideOutput(containerId) {
-        const section = document.getElementById(`${containerId}-output`);
-        if (section) {
-            section.style.display = 'none';
-        }
-    }
-
-    // Navigation utilities
-    setActiveNavLink() {
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        const navLinks = document.querySelectorAll('.nav-link');
-        
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            const href = link.getAttribute('href');
-            if (href === currentPage || (currentPage === 'index.html' && href === './')) {
-                link.classList.add('active');
-            }
-        });
-    }
-
-    // Smooth scrolling for navigation
-    enableSmoothScrolling() {
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
     }
 }
 
-// Global instance
-const signaturePadDocs = new SignaturePadDocs();
-
-// Wait for library to load and DOM to be ready
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        await signaturePadDocs.loadLibrary();
-        signaturePadDocs.setActiveNavLink();
-        signaturePadDocs.enableSmoothScrolling();
-        
-        // Initialize any signature pads on the page
-        if (typeof initSignaturePads === 'function') {
-            initSignaturePads();
-        }
-        
-        console.log('🖋️ Signature Pad Documentation Ready!');
-    } catch (error) {
-        console.error('❌ Failed to initialize signature pad documentation:', error);
-    }
-});
-
-// Export for global use
-window.signaturePadDocs = signaturePadDocs;
+// Create global instance
+const signatureDocs = new SignaturePadDocs();

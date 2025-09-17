@@ -213,6 +213,14 @@ body {
     border-style: solid;
 }
 
+.signature-canvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    cursor: crosshair;
+    background: transparent;
+}
+
 .signature-placeholder {
     position: absolute;
     top: 50%;

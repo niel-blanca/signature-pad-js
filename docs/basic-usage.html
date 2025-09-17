@@ -217,10 +217,12 @@ document.getElementById('clear').addEventListener('click', () =&gt; {
                     <div class="demo-item">
                         <h3 class="demo-title">🎯 Live Demo: Basic Signature Pad</h3>
                         <div class="demo-body">
-                            <div class="signature-container medium">
-                                <canvas id="basic-pad" class="signature-canvas"></canvas>
-                                <div class="signature-status" id="basic-status">Ready to sign</div>
+                            <div id="basic-pad" class="signature-container medium">
+                                <div class="signature-placeholder">
+                                    🖊️ Draw your signature here
+                                </div>
                             </div>
+                            <div id="basic-status" class="signature-status">Ready to sign</div>
                             <div class="controls">
                                 <button class="btn btn-secondary" onclick="signatureDocs.clearPad('basic-pad')">Clear</button>
                                 <button class="btn btn-primary" onclick="signatureDocs.exportPNG('basic-pad', 'basic-signature')">Save as PNG</button>
@@ -271,10 +273,12 @@ document.getElementById('clear').addEventListener('click', () =&gt; {
                                         <div class="config-value">#2196F3</div>
                                     </div>
                                 </div>
-                                <div class="signature-container medium">
-                                    <canvas id="custom-colors-pad" class="signature-canvas"></canvas>
-                                    <div class="signature-status" id="custom-colors-status">Try the blue pen!</div>
+                                <div id="custom-colors-pad" class="signature-container medium">
+                                    <div class="signature-placeholder">
+                                        🎨 Try the blue pen!
+                                    </div>
                                 </div>
+                                <div id="custom-colors-status" class="signature-status">Try the blue pen!</div>
                                 <div class="controls">
                                     <button class="btn btn-secondary" onclick="signatureDocs.clearPad('custom-colors-pad')">Clear</button>
                                 </div>
@@ -294,10 +298,12 @@ document.getElementById('clear').addEventListener('click', () =&gt; {
                                         <div class="config-value">5.0</div>
                                     </div>
                                 </div>
-                                <div class="signature-container medium">
-                                    <canvas id="thick-strokes-pad" class="signature-canvas"></canvas>
-                                    <div class="signature-status" id="thick-strokes-status">Draw with variable thickness</div>
+                                <div id="thick-strokes-pad" class="signature-container medium">
+                                    <div class="signature-placeholder">
+                                        ✏️ Draw with variable thickness
+                                    </div>
                                 </div>
+                                <div id="thick-strokes-status" class="signature-status">Draw with variable thickness</div>
                                 <div class="controls">
                                     <button class="btn btn-secondary" onclick="signatureDocs.clearPad('thick-strokes-pad')">Clear</button>
                                 </div>
@@ -349,10 +355,12 @@ signaturePad.on('endStroke', () =&gt; console.log('Finished stroke'));</code></p
                     <div class="demo-item">
                         <h3 class="demo-title">🔄 Interactive Methods Demo</h3>
                         <div class="demo-body">
-                            <div class="signature-container medium">
-                                <canvas id="methods-pad" class="signature-canvas"></canvas>
-                                <div class="signature-status" id="methods-status">Draw something and try the actions below</div>
+                            <div id="methods-pad" class="signature-container medium">
+                                <div class="signature-placeholder">
+                                    🔄 Draw something and try the actions below
+                                </div>
                             </div>
+                            <div id="methods-status" class="signature-status">Draw something and try the actions below</div>
                             <div class="controls">
                                 <button class="btn btn-secondary" onclick="signatureDocs.clearPad('methods-pad')">Clear</button>
                                 <button class="btn btn-primary" onclick="checkIfEmpty('methods-pad')">Check if Empty</button>
@@ -417,10 +425,12 @@ window.addEventListener('resize', () =&gt; resizeCanvas(canvas));</code></pre>
                         <h3 class="demo-title">📱 Responsive Demo</h3>
                         <div class="demo-body">
                             <p>This signature pad automatically adapts to different screen sizes. Try resizing your browser window!</p>
-                            <div class="signature-container large">
-                                <canvas id="responsive-pad" class="signature-canvas"></canvas>
-                                <div class="signature-status" id="responsive-status">Responsive signature pad - try on mobile!</div>
+                            <div id="responsive-pad" class="signature-container large">
+                                <div class="signature-placeholder">
+                                    📱 Responsive signature pad - try on mobile!
+                                </div>
                             </div>
+                            <div id="responsive-status" class="signature-status">Responsive signature pad - try on mobile!</div>
                             <div class="controls">
                                 <button class="btn btn-secondary" onclick="signatureDocs.clearPad('responsive-pad')">Clear</button>
                                 <button class="btn btn-primary" onclick="signatureDocs.exportPNG('responsive-pad', 'responsive-signature')">Save</button>
@@ -497,10 +507,12 @@ function clearSignature() {
                                 
                                 <div style="margin-bottom: 1rem;">
                                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Digital Signature:</label>
-                                    <div class="signature-container medium">
-                                        <canvas id="form-pad" class="signature-canvas"></canvas>
-                                        <div class="signature-status" id="form-status">Please sign above</div>
+                                    <div id="form-pad" class="signature-container medium">
+                                        <div class="signature-placeholder">
+                                            ✍️ Please sign above
+                                        </div>
                                     </div>
+                                    <div id="form-status" class="signature-status">Please sign above</div>
                                 </div>
                                 
                                 <div class="controls">
