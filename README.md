@@ -1,64 +1,124 @@
-# 🖋️ Signature Pad JS
+# SignaturePad.js# 🖋️ Signature Pad JS
 
-![NPM Version](https://img.shields.io/npm/v/@niel-blanca/signature-pad)
+
+
+A lightweight JavaScript library for drawing smooth signatures on HTML5 canvas elements with touch and mouse support.![NPM Version](https://img.shields.io/npm/v/@niel-blanca/signature-pad)
+
 ![Build Status](https://img.shields.io/github/actions/workflow/status/niel-blanca/signature-pad-js/npm-publish-github-packages.yml)
-![License](https://img.shields.io/npm/l/@niel-blanca/signature-pad)
+
+## Features![License](https://img.shields.io/npm/l/@niel-blanca/signature-pad)
+
 ![Bundle Size](https://img.shields.io/bundlephobia/minzip/@niel-blanca/signature-pad)
 
-## 🎮 [**Live Demo & Documentation →**](https://niel-blanca.github.io/signature-pad-js/)
+- Touch & Mouse Support for all devices
 
-> **Modern, lightweight signature capture with zero dependencies (12.5KB minified)**
+- Highly Customizable (colors, thickness, smoothness)## 🎮 [**Live Demo & Documentation →**](https://niel-blanca.github.io/signature-pad-js/)
 
-A feature-rich signature pad built with Vanilla JavaScript. Smooth bezier curves, pressure sensitivity, multiple export formats, and intuitive API.
+- Responsive Design
 
-## ⚡ Quick Start
+- TypeScript Support> **Modern, lightweight signature capture with zero dependencies (12.5KB minified)**
 
-### Install
+- Data Export (base64, canvas data)
+
+- Event CallbacksA feature-rich signature pad built with Vanilla JavaScript. Smooth bezier curves, pressure sensitivity, multiple export formats, and intuitive API.
+
+
+
+## Quick Start## ⚡ Quick Start
+
+
+
+### Installation### Install
+
 ```bash
-npm install @niel-blanca/signature-pad
+
+```bashnpm install @niel-blanca/signature-pad
+
+npm install signature-pad-js```
+
 ```
 
 ### Use
-```javascript
-import SignaturePad from '@niel-blanca/signature-pad';
 
-const container = document.getElementById('signature-container');
+Or via CDN:```javascript
+
+```htmlimport SignaturePad from '@niel-blanca/signature-pad';
+
+<script src="https://unpkg.com/signature-pad-js@latest/dist/signature-pad.min.js"></script>
+
+```const container = document.getElementById('signature-container');
+
 const pad = new SignaturePad(container);
 
+### Basic Usage
+
 // Export as PNG
-const pngData = pad.toDataURL();
 
-// Export as JSON  
-const jsonData = pad.toJSON();
+```htmlconst pngData = pad.toDataURL();
 
-// Clear signature
-pad.clear();
+<canvas id="signature-pad" class="signature-canvas"></canvas>
+
+<script>// Export as JSON  
+
+  const canvas = document.getElementById('signature-pad');const jsonData = pad.toJSON();
+
+  const signaturePad = new SignaturePad(canvas);
+
+</script>// Clear signature
+
+```pad.clear();
+
 ```
+
+## API
 
 ### CDN
-```html
-<script src="https://unpkg.com/@niel-blanca/signature-pad@latest/dist/signature-pad.min.js"></script>
-<script>
-  const pad = new SignaturePad(document.getElementById('container'));
-</script>
+
+```javascript```html
+
+// Drawing control<script src="https://unpkg.com/@niel-blanca/signature-pad@latest/dist/signature-pad.min.js"></script>
+
+signaturePad.clear()<script>
+
+signaturePad.isEmpty()  const pad = new SignaturePad(document.getElementById('container'));
+
+signaturePad.on() / signaturePad.off()</script>
+
 ```
 
-## ✨ Features
+// Data management
+
+signaturePad.toDataURL()## ✨ Features
+
+signaturePad.fromDataURL(dataURL)
 
 - 🎨 **Smooth Drawing** - Bezier curves with pressure sensitivity
-- 📱 **Touch Support** - Works on desktop, tablet, and mobile
-- 🔄 **Undo/Redo** - Full history management
-- 📤 **Multiple Exports** - PNG, JPG, SVG, JSON formats
-- ⚡ **Lightweight** - Only 12.5KB minified, zero dependencies
-- 🔧 **Configurable** - 15+ customization options
+
+// Configuration- 📱 **Touch Support** - Works on desktop, tablet, and mobile
+
+signaturePad.penColor = '#000'- 🔄 **Undo/Redo** - Full history management
+
+signaturePad.minWidth = 0.5- 📤 **Multiple Exports** - PNG, JPG, SVG, JSON formats
+
+signaturePad.maxWidth = 2.5- ⚡ **Lightweight** - Only 12.5KB minified, zero dependencies
+
+```- 🔧 **Configurable** - 15+ customization options
+
 - 📝 **TypeScript** - Full type definitions included
-- 🎯 **Method Chaining** - Fluent API design
 
-## 📖 Documentation
+## Documentation- 🎯 **Method Chaining** - Fluent API design
 
-- **[📍 Live Demo](https://niel-blanca.github.io/signature-pad-js/)** - Interactive examples and full documentation
+
+
+For comprehensive documentation, examples, and advanced usage, visit the [documentation site](./docs/index.html).## 📖 Documentation
+
+
+
+## License- **[📍 Live Demo](https://niel-blanca.github.io/signature-pad-js/)** - Interactive examples and full documentation
+
 - **[📦 NPM Package](https://www.npmjs.com/package/@niel-blanca/signature-pad)**
-- **[🔧 API Reference](https://niel-blanca.github.io/signature-pad-js/#api)**
+
+MIT License - see [LICENSE](LICENSE) file for details.- **[🔧 API Reference](https://niel-blanca.github.io/signature-pad-js/#api)**
 - **[⚙️ Configuration Options](https://niel-blanca.github.io/signature-pad-js/#options)**
 
 ## 🤝 Contributing
